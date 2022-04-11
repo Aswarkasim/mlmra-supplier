@@ -314,6 +314,7 @@ class CheckOutController extends Controller
         $responses = Http::withHeaders([
             'key' => env('RAJAONGKIR_API')
         ])->get('https://pro.rajaongkir.com/api/subdistrict', [
+            'city' => $request->city
             ]);
         $responses->json();
         $responses = json_decode($responses, true);

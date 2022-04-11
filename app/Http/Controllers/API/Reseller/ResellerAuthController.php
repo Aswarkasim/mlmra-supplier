@@ -10,6 +10,15 @@ use App\Models\OtpHistory;
 use App\Models\Referal;
 use App\Models\ResellerShop;
 use App\Models\Setting;
+use App\Models\Product;
+use App\Models\Media;
+use App\Models\Category;
+use App\Models\SubCategory;
+use App\Models\User;
+use App\Models\Address;
+use App\Models\ProductVarian;
+use App\Models\Comment;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,6 +35,7 @@ use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Resources\ResellerResource;
+use App\Http\Resources\ProductResource;
 
 
 class ResellerAuthController extends Controller
@@ -203,6 +213,62 @@ class ResellerAuthController extends Controller
             'message' => 'Successfully logged out'
         ], 200);
 
+    }
+
+    public function product() {
+        $product = Product::whereStatus(StatusType::PUBLISHED)->get();
+        return ProductResource::collection($product);
+    }
+
+    public function detail(Request $request) {
+        $productDetail = Product::whereSlug($request->slug)->first();
+        $media = Media::whereCode($productDetail->media_code)->get();
+        $category = Category::whereId($productDetail->category_id)->get();
+        $sub_category = SubCategory::whereId($productDetail->sub_category_id)->get();
+        $user = User::whereId($productDetail->user_id)->get();
+        $supplierAdress = Address::whereUserId($productDetail->user_id)->whereStatus(StatusType::ACTIVE)->first();
+        $varian_warna = ProductVarian::whereProductId($productDetail->id)->select('id','color','color_total')->get();
+        $varian_berat = ProductVarian::whereProductId($productDetail->id)->select('id','weight','weight_total')->get();
+        $varian_ukuran = ProductVarian::whereProductId($productDetail->id)->select('id','size','size_total')->get();
+        $varian_tipe = ProductVarian::whereProductId($productDetail->id)->select('id','type','type_total')->get();
+        $varian_rasa = ProductVarian::whereProductId($productDetail->id)->select('id','taste','taste_total')->get();
+        $anotherProduct = Product::whereUserId($productDetail->user_id)
+            ->where('slug', '!=', $productDetail->slug)
+            ->whereStatus(StatusType::PUBLISHED)->get();
+        if ($request->has('rating')) {
+            $comment = Comment::with('reseller', 'reseller.media')->whereProductId($productDetail->id)->whereRating($request->rating)->get();
+        } else {
+            $comment = Comment::with('reseller', 'reseller.media')->whereProductId($productDetail->id)->get();
+        }
+        $ratings = $comment;
+        $totalRating = $ratings->count();
+        if ($totalRating > 0) {
+            $ratingAvg = 0;
+            foreach ($ratings as $rate) {
+                $ratingAvg += $rate->rating;
+            }
+            $ratingAvg /= $totalRating;
+            $ratingAvg = number_format($ratingAvg, 1, '.', '');
+        } else {
+            $ratingAvg = [];
+        }
+        $totalComment = count($comment);
+        return response()->json([
+            'data' => $productDetail,
+            'media' => $media,
+            ['varian_warna' => $varian_warna],
+            ['varian_berat' => $varian_berat],
+            ['varian_ukuran'=> $varian_ukuran],
+            ['varian_tipe' => $varian_tipe],
+            ['varian_rasa' => $varian_rasa],
+            'another' => $anotherProduct,
+            'category' => $category,
+            'sub_category' => $sub_category,
+            'supplier' => $user,
+            'comment' => $comment,
+            'rating_average' => $ratingAvg,
+            'alamat_supplier' => $supplierAdress
+        ]);
     }
 
     protected function respondWithToken($token)

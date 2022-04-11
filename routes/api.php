@@ -46,6 +46,9 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
     Route::post('tes', function (Request $request) {
          return $request->file('image')->store('storage');
     });
+    Route::get('gallery', [ResellerAuthController::class, 'product']);
+    Route::get('gallery/detail', [ResellerAuthController::class, 'detail']);
+
 
 Route::group(['middleware' => 'auth:reseller-api'], function () {
 
@@ -124,6 +127,7 @@ Route::group(['middleware' => 'auth:reseller-api'], function () {
 
     Route::group(['prefix' => 'transaction'], function () {
         Route::get('unpaid', [TransactionController::class, 'unpaid']);
+        Route::get('unpaid/single', [TransactionController::class, 'unpaid_single']);
         Route::post('pay', [TransactionController::class, 'payment']);
         Route::get('process', [TransactionController::class, 'process']);
         Route::post('cancel/pesanan', [TransactionController::class, 'cancelTransaction']);
@@ -160,11 +164,6 @@ Route::group(['prefix' => 'global', 'namespace' => 'Global'], function () {
    Route::get('image/url', [MultiFlatformController::class, 'imageUrl']);
    Route::get('image/media_code', [MultiFlatformController::class, 'mediaCode']);
 });
-
-
-
-
-
 
 
 Route::group(['prefix' => 'customer', 'namespace' => 'Customer'], function () {

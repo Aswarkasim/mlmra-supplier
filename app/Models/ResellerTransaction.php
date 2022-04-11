@@ -31,6 +31,10 @@ class ResellerTransaction extends Model
         return $this->belongsTo(City::class);
     }
 
+    public function bank_account() {
+        return $this->belongsTo(BankAccount::class);
+    }
+
     public function reseller_transaction_detail() {
         return $this->hasMany(ResellerTransactionDetail::class);
     }

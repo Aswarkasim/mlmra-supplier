@@ -41,6 +41,19 @@ class TransactionController extends Controller
 //        ], 200);
     }
 
+    public function unpaid_single(Request $request) {
+        $unpaid = ResellerTransaction::with( 'user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product', 'bank_account')->whereTransactionStatus(TransactionStatus::UNPAID)
+            ->whereId($request->transaction_id)
+            ->whereResellerId(Auth::guard('reseller-api')->id())->get();
+        return TransactionResource::collection($unpaid);
+//        return response()->json([
+//            'data' => [
+//                'transaction' => $unpaid,
+//                ''
+//            ]
+//        ], 200);
+    }
+
     public function payment(Request $request) {
         $validator = Validator::make($request->all(), [
             'transaction_id' => 'required',
