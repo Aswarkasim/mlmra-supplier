@@ -106,3 +106,5 @@ class SupplierController extends Controller
         return Excel::download(new SupplierExport(), 'supplier.xlsx');
     }
 }
+
+//coba kan
