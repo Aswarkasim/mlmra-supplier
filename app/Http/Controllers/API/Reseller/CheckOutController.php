@@ -19,7 +19,34 @@ use Illuminate\Support\Facades\Http;
 
 class CheckOutController extends Controller
 {
-    public function shippingType(Request $request) {
+
+    function addressupdate(Request $request)
+    {
+        $id = $request->id;
+        $reseller_id = auth()->user()->id;
+        $address = Address::find($id);
+        $anotherAddress = Address::where('reseller_id', $reseller_id)->where('id', '!=', $id)->get();
+        // print_r($id);
+        // die('masuk');
+
+        if ($address->status == StatusType::INACTIVE) {
+            foreach ($anotherAddress as $adress) {
+                $adress->status = StatusType::INACTIVE;
+                $adress->save();
+            }
+            $address->status = StatusType::ACTIVE;
+        } else {
+            $activeAddress = false;
+        }
+        return response()->json([
+            'status' => 'Success',
+            'anotherAddress' => $anotherAddress,
+            'addessActive'  => $address,
+            'data' => "Alamat Aktif"
+        ], 400);
+    }
+    public function shippingType(Request $request)
+    {
         $sendBySameCity = true;
         $resellerId = Auth::guard('reseller-api')->id();
         $resellerAddress = Address::whereResellerId($resellerId)->whereStatus(StatusType::ACTIVE)->first();
@@ -27,7 +54,7 @@ class CheckOutController extends Controller
             return response()->json([
                 'status' => 'failed',
                 'data' => "Silahkan isi alamat terlbeih dahulu"
-            ], 400  );
+            ], 400);
         }
         $supplierAddress = Address::whereUserId($request->supplier_id)->whereStatus(StatusType::ACTIVE)->first();
         if ($supplierAddress->city_id != $resellerAddress->city_id) {
@@ -37,24 +64,25 @@ class CheckOutController extends Controller
             ShippingType::PERSONAL_COURIER => true,
             ShippingType::REGULER => true,
             ShippingType::SAME_CITY_DELIVERY => $sendBySameCity
-        ],200);
+        ], 200);
     }
 
-    public function checkOutCart(Request $request) {
+    public function checkOutCart(Request $request)
+    {
         $supplierId = [];
-        for($i = 0; $i < count($request->product_id); $i++) {
+        for ($i = 0; $i < count($request->product_id); $i++) {
             $product = Product::whereId($request->product_id[$i])->first();
             array_push($supplierId, $product->user_id);
             if ($product->status != StatusType::PUBLISHED) {
                 return response()->json([
                     'status' => 'failed',
-                    'data' => "Mohon maaf, Product " .$product->title. " Sedang tidak tersedia"
+                    'data' => "Mohon maaf, Product " . $product->title . " Sedang tidak tersedia"
                 ], 400);
             }
         }
 
 
-        if(count(array_unique($supplierId)) < count($supplierId)){
+        if (count(array_unique($supplierId)) < count($supplierId)) {
             return response()->json([
                 'status' => 'failed',
                 'data' => "Mohon maaf, Hanya bisa membeli dari 1 toko!"
@@ -67,7 +95,8 @@ class CheckOutController extends Controller
         ], 200);
     }
 
-    public function transaction(Request $request) {
+    public function transaction(Request $request)
+    {
         // optional cart_id or product_id, and another
         $resellerId = Auth::guard('reseller-api')->id();
         $resellerAddress = Address::whereResellerId($resellerId)->whereStatus(StatusType::ACTIVE)->first();
@@ -91,7 +120,7 @@ class CheckOutController extends Controller
         if (!empty($request->product_id)) {
             // Start transaction
             DB::beginTransaction();
-            $waybillNumber = str_pad(rand(0,999), 5, "0", STR_PAD_LEFT);
+            $waybillNumber = str_pad(rand(0, 999), 5, "0", STR_PAD_LEFT);
             $transaction = new ResellerTransaction();
             $transaction->waybill_number = $waybillNumber;
             $transaction->transaction_code = $waybillNumber;
@@ -116,19 +145,18 @@ class CheckOutController extends Controller
             if ($transaction->save()) {
                 $lastTransaction = ResellerTransaction::whereWaybillNumber($waybillNumber)->first();
                 $productId = Product::whereId($request->product_id)->first();
-                    $transactionDetail1 = new ResellerTransactionDetail();
-                    $transactionDetail1->reseller_transaction_id = $lastTransaction->id;
-                    $transactionDetail1->product_id = $request->product_id;
-                    $transactionDetail1->varian_color = $request->varian_color;
-                    $transactionDetail1->varian_weight = $request->varian_weight;
-                    $transactionDetail1->varian_size = $request->varian_size;
-                    $transactionDetail1->varian_type = $request->varian_type;
-                    $transactionDetail1->varian_taste = $request->varian_taste;
-                    $transactionDetail1->product_price = $productId->reseller_price;
-                    $transactionDetail1->save();
+                $transactionDetail1 = new ResellerTransactionDetail();
+                $transactionDetail1->reseller_transaction_id = $lastTransaction->id;
+                $transactionDetail1->product_id = $request->product_id;
+                $transactionDetail1->varian_color = $request->varian_color;
+                $transactionDetail1->varian_weight = $request->varian_weight;
+                $transactionDetail1->varian_size = $request->varian_size;
+                $transactionDetail1->varian_type = $request->varian_type;
+                $transactionDetail1->varian_taste = $request->varian_taste;
+                $transactionDetail1->product_price = $productId->reseller_price;
+                $transactionDetail1->save();
             }
-            if( !$transaction || !$transactionDetail1 )
-            {
+            if (!$transaction || !$transactionDetail1) {
                 DB::rollBack();
                 return response()->json([
                     'status' => 'failed',
@@ -149,10 +177,10 @@ class CheckOutController extends Controller
             }
 
             // ini untuk beli lagi halaman pesanan diterima
-        } else if(!empty($request->transaction_detail_id)) {
+        } else if (!empty($request->transaction_detail_id)) {
             // Start transaction
             DB::beginTransaction();
-            $waybillNumber = str_pad(rand(0,999), 5, "0", STR_PAD_LEFT);
+            $waybillNumber = str_pad(rand(0, 999), 5, "0", STR_PAD_LEFT);
             $transaction = new ResellerTransaction();
             $transaction->waybill_number = $waybillNumber;
             $transaction->transaction_code = $waybillNumber;
@@ -176,7 +204,7 @@ class CheckOutController extends Controller
             $transaction->remarks = $request->catatan;
             if ($transaction->save()) {
                 $lastTransaction = ResellerTransaction::whereWaybillNumber($waybillNumber)->first();
-                for($i = 0; $i < count($request->transaction_detail_id); $i++) {
+                for ($i = 0; $i < count($request->transaction_detail_id); $i++) {
                     $productTransaction = ResellerTransactionDetail::whereId($request->transaction_detail_id[$i])->first();
                     $transactionDetail2 = new ResellerTransactionDetail();
                     $transactionDetail2->reseller_transaction_id = $lastTransaction->id;
@@ -190,8 +218,7 @@ class CheckOutController extends Controller
                     $transactionDetail2->save();
                 }
             }
-            if( !$transaction || !$transactionDetail2 )
-            {
+            if (!$transaction || !$transactionDetail2) {
                 DB::rollBack();
                 return response()->json([
                     'status' => 'failed',
@@ -213,7 +240,7 @@ class CheckOutController extends Controller
         } else {
             // Start transaction
             DB::beginTransaction();
-            $waybillNumber = str_pad(rand(0,999), 5, "0", STR_PAD_LEFT);
+            $waybillNumber = str_pad(rand(0, 999), 5, "0", STR_PAD_LEFT);
             $transaction = new ResellerTransaction();
             $transaction->waybill_number = $waybillNumber;
             $transaction->transaction_code = $waybillNumber;
@@ -237,7 +264,7 @@ class CheckOutController extends Controller
             $transaction->remarks = $request->catatan;
             if ($transaction->save()) {
                 $lastTransaction = ResellerTransaction::whereWaybillNumber($waybillNumber)->first();
-                for($i = 0; $i < count($request->cart_id); $i++) {
+                for ($i = 0; $i < count($request->cart_id); $i++) {
                     $product = ResellerCart::whereId($request->cart_id[$i])->first();
                     $transactionDetail = new ResellerTransactionDetail();
                     $transactionDetail->reseller_transaction_id = $lastTransaction->id;
@@ -251,8 +278,7 @@ class CheckOutController extends Controller
                     $transactionDetail->save();
                 }
             }
-            if( !$transaction || !$transactionDetail )
-            {
+            if (!$transaction || !$transactionDetail) {
                 DB::rollBack();
                 return response()->json([
                     'status' => 'failed',
@@ -274,7 +300,8 @@ class CheckOutController extends Controller
         }
     }
 
-    public function ongkirReguler(Request $request) {
+    public function ongkirReguler(Request $request)
+    {
         $responses = Http::withHeaders([
             'key' => env('RAJAONGKIR_API')
         ])->post('https://pro.rajaongkir.com/api/cost', [
@@ -290,35 +317,35 @@ class CheckOutController extends Controller
         return $responses;
     }
 
-    public function cekKota(Request $request) {
+    public function cekKota(Request $request)
+    {
         $responses = Http::withHeaders([
             'key' => env('RAJAONGKIR_API')
-        ])->get('https://pro.rajaongkir.com/api/city', [
-            ]);
+        ])->get('https://pro.rajaongkir.com/api/city', []);
         $responses->json();
         $responses = json_decode($responses, true);
         return $responses;
     }
 
-    public function cekProv(Request $request) {
+    public function cekProv(Request $request)
+    {
         $responses = Http::withHeaders([
             'key' => env('RAJAONGKIR_API')
-        ])->get('https://pro.rajaongkir.com/api/province', [
-            ]);
+        ])->get('https://pro.rajaongkir.com/api/province', []);
         $responses->json();
         $responses = json_decode($responses, true);
         return $responses;
     }
 
-    public function cekKec(Request $request) {
+    public function cekKec(Request $request)
+    {
         $responses = Http::withHeaders([
             'key' => env('RAJAONGKIR_API')
         ])->get('https://pro.rajaongkir.com/api/subdistrict', [
             'city' => $request->city
-            ]);
+        ]);
         $responses->json();
         $responses = json_decode($responses, true);
         return $responses;
     }
-
 }
