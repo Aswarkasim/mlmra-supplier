@@ -23,18 +23,21 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
-    public function detail(Request $request) {
-        $productDetail = Product::whereSlug($request->slug)->first();
+    public function detail(Request $request)
+    {
+
+        $productDetail = Product::with('user')->whereSlug($request->slug)->first();
+        // print_r($productDetail);
         $media = Media::whereCode($productDetail->media_code)->get();
         $category = Category::whereId($productDetail->category_id)->get();
         $sub_category = SubCategory::whereId($productDetail->sub_category_id)->get();
         $user = User::whereId($productDetail->user_id)->get();
         $supplierAdress = Address::whereUserId($productDetail->user_id)->whereStatus(StatusType::ACTIVE)->first();
-        $varian_warna = ProductVarian::whereProductId($productDetail->id)->select('id','color','color_total')->get();
-        $varian_berat = ProductVarian::whereProductId($productDetail->id)->select('id','weight','weight_total')->get();
-        $varian_ukuran = ProductVarian::whereProductId($productDetail->id)->select('id','size','size_total')->get();
-        $varian_tipe = ProductVarian::whereProductId($productDetail->id)->select('id','type','type_total')->get();
-        $varian_rasa = ProductVarian::whereProductId($productDetail->id)->select('id','taste','taste_total')->get();
+        $varian_warna = ProductVarian::whereProductId($productDetail->id)->select('id', 'color', 'color_total')->get();
+        $varian_berat = ProductVarian::whereProductId($productDetail->id)->select('id', 'weight', 'weight_total')->get();
+        $varian_ukuran = ProductVarian::whereProductId($productDetail->id)->select('id', 'size', 'size_total')->get();
+        $varian_tipe = ProductVarian::whereProductId($productDetail->id)->select('id', 'type', 'type_total')->get();
+        $varian_rasa = ProductVarian::whereProductId($productDetail->id)->select('id', 'taste', 'taste_total')->get();
         $anotherProduct = Product::whereUserId($productDetail->user_id)
             ->where('slug', '!=', $productDetail->slug)
             ->whereStatus(StatusType::PUBLISHED)->get();
@@ -61,7 +64,7 @@ class ProductController extends Controller
             'media' => $media,
             ['varian_warna' => $varian_warna],
             ['varian_berat' => $varian_berat],
-            ['varian_ukuran'=> $varian_ukuran],
+            ['varian_ukuran' => $varian_ukuran],
             ['varian_tipe' => $varian_tipe],
             ['varian_rasa' => $varian_rasa],
             'another' => $anotherProduct,
@@ -74,27 +77,30 @@ class ProductController extends Controller
         ]);
     }
 
-    public function beli(Request $request) {
+    public function beli(Request $request)
+    {
         $productDetail = Product::whereSlug($request->slug)->first();
         $supplierAdress = Address::whereUserId($productDetail->user_id)->whereStatus(StatusType::ACTIVE)->first();
         return response()->json([
             'data' => $productDetail,
-            'varian_warna' =>$request->varian_color,
+            'varian_warna' => $request->varian_color,
             'varian_berat' => $request->varian_weight,
-            'varian_ukuran'=> $request->varian_ukuran,
+            'varian_ukuran' => $request->varian_ukuran,
             'varian_tipe' => $request->varian_tipe,
             'varian_rasa' => $request->varian_rasa,
             'alamat_supplier' => $supplierAdress
         ]);
     }
 
-    public function allCart() {
+    public function allCart()
+    {
         $cart = ResellerCart::with(['reseller', 'product'])->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return CartResource::collection($cart);
         // return CartResource::collection($cart);
     }
 
-    public function cart(Request $request) {
+    public function cart(Request $request)
+    {
         $resellerId = Auth::guard('reseller-api')->id();
         $cartCheck = ResellerCart::whereProductId($request->id)
             ->whereResellerId($resellerId)
@@ -139,7 +145,8 @@ class ProductController extends Controller
             }
         }
     }
-    public function incrementOrder(Request $request) {
+    public function incrementOrder(Request $request)
+    {
         $resellerId = Auth::guard('reseller-api')->id();
         $cardIsAdded = ResellerCart::whereResellerId($resellerId)->whereId($request->cart)->whereProductId($request->product_id)->first();
         if ($cardIsAdded) {
@@ -157,7 +164,8 @@ class ProductController extends Controller
         }
     }
 
-    public function decrementOrder(Request $request) {
+    public function decrementOrder(Request $request)
+    {
         $resellerId = Auth::guard('reseller-api')->id();
         $cardIsAdded = ResellerCart::whereResellerId($resellerId)->whereId($request->cart)->whereProductId($request->product_id)->first();
         if ($cardIsAdded) {
@@ -183,30 +191,34 @@ class ProductController extends Controller
         }
     }
 
-    public function recomendation(Request $request) {
+    public function recomendation(Request $request)
+    {
         $product = Product::whereStatus(StatusType::PUBLISHED)
-                    ->whereCategoryId($request->category_id)
-                    ->where('id', '!=', $request->id)->get();
+            ->whereCategoryId($request->category_id)
+            ->where('id', '!=', $request->id)->get();
         return ProductResource::collection($product);
     }
 
-    public function filterProductByCategory(Request $request) {
+    public function filterProductByCategory(Request $request)
+    {
         $products = Product::whereCategoryId($request->category_id)->get();
         return ProductResource::collection($products);
     }
 
-    public function multipleDeleteCart(Request $request) {
-        for($i = 0; $i < count($request->data_id); $i++) {
+    public function multipleDeleteCart(Request $request)
+    {
+        for ($i = 0; $i < count($request->data_id); $i++) {
             $cart = ResellerCart::whereId($request->data_id[$i])->first();
             $cart->delete();
         }
         return response()->json([
             'status' => "success",
             'message' => "Berhasil dihapus!"
-        ],201);
+        ], 201);
     }
 
-    public function addToMyShop(Request $request) {
+    public function addToMyShop(Request $request)
+    {
         $category = Product::whereId($request->product_id)->select('category_id')->first();
         $existCategory = CategoryResellerLog::whereCategoryId($category->category_id)->whereResellerId(Auth::guard('reseller-api')->id())->first();
         if (empty($existCategory)) {
@@ -223,7 +235,7 @@ class ProductController extends Controller
             return response()->json([
                 'status' => "success",
                 'message' => "Berhasil ditambahkan ke toko!"
-            ],201);
+            ], 201);
         }
     }
 }

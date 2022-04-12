@@ -25,41 +25,46 @@ class TransactionController extends Controller
 {
     use AdminGeneralTrait;
 
-    static function getResellerId() {
+    static function getResellerId()
+    {
         return Auth::guard('reseller-api')->id();
     }
 
-    public function unpaid() {
-        $unpaid = ResellerTransaction::with( 'user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::UNPAID)
+    public function unpaid()
+    {
+        // die('masuk');
+        $unpaid = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail')->whereTransactionStatus(TransactionStatus::UNPAID)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($unpaid);
-//        return response()->json([
-//            'data' => [
-//                'transaction' => $unpaid,
-//                ''
-//            ]
-//        ], 200);
+        //        return response()->json([
+        //            'data' => [
+        //                'transaction' => $unpaid,
+        //                ''
+        //            ]
+        //        ], 200);
     }
 
-    public function unpaid_single(Request $request) {
-        $unpaid = ResellerTransaction::with( 'user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product', 'bank_account')->whereTransactionStatus(TransactionStatus::UNPAID)
+    public function unpaid_single(Request $request)
+    {
+        $unpaid = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product', 'bank_account')->whereTransactionStatus(TransactionStatus::UNPAID)
             ->whereId($request->transaction_id)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($unpaid);
-//        return response()->json([
-//            'data' => [
-//                'transaction' => $unpaid,
-//                ''
-//            ]
-//        ], 200);
+        //        return response()->json([
+        //            'data' => [
+        //                'transaction' => $unpaid,
+        //                ''
+        //            ]
+        //        ], 200);
     }
 
-    public function payment(Request $request) {
+    public function payment(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'transaction_id' => 'required',
             'image' => 'required'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -77,13 +82,15 @@ class TransactionController extends Controller
         ], 201);
     }
 
-    public function process() {
-        $process = ResellerTransaction::with('user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::PROCESS)
+    public function process()
+    {
+        $process = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::PROCESS)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($process);
     }
 
-    public function cancelTransaction(Request $request) {
+    public function cancelTransaction(Request $request)
+    {
         $reseller_transaction = ResellerTransaction::whereId($request->transaction_id)->first();
         $reseller_transaction->transaction_status = TransactionStatus::CANCEL;
         $reseller_transaction->save();
@@ -93,20 +100,23 @@ class TransactionController extends Controller
         ], 201);
     }
 
-    public function sent() {
-        $sent = ResellerTransaction::with('user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::SENT)
+    public function sent()
+    {
+        $sent = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::SENT)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($sent);
     }
 
-    public function beli(Request $request) {
-        $sent = ResellerTransaction::with('user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::SENT)->whereId($request->transaction_id)->first();
+    public function beli(Request $request)
+    {
+        $sent = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::SENT)->whereId($request->transaction_id)->first();
         return response()->json([
             'data' => $sent
         ], 200);
     }
 
-    public function pesananDiterima(Request $request) {
+    public function pesananDiterima(Request $request)
+    {
         $reseller_transaction = ResellerTransaction::whereId($request->transaction_id)->first();
         $countProduct = count(ResellerTransactionDetail::whereResellerTransactionId($request->transaction_id)->get());
         $reseller_transaction->transaction_status = TransactionStatus::DONE;
@@ -121,7 +131,8 @@ class TransactionController extends Controller
         ], 201);
     }
 
-    public function trackTransaction(Request $request) {
+    public function trackTransaction(Request $request)
+    {
         $responses = Http::withHeaders([
             'key' => env('RAJAONGKIR_API')
         ])->post('https://pro.rajaongkir.com/api/waybill', [
@@ -133,15 +144,17 @@ class TransactionController extends Controller
         return $responses;
     }
 
-    public function done() {
-        $done = ResellerTransaction::with('user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::DONE)
+    public function done()
+    {
+        $done = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::DONE)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($done);
     }
 
-    public function tambahUlasan(Request $request) {
+    public function tambahUlasan(Request $request)
+    {
         $supplierId = null;
-        for($i = 0; $i < count($request->transaction_detail_id); $i++) {
+        for ($i = 0; $i < count($request->transaction_detail_id); $i++) {
             $transactionDetail = ResellerTransactionDetail::whereId($request->transaction_detail_id[$i])->first();
             $comment = new Comment();
             $comment->product_id = $transactionDetail->product_id;
@@ -155,13 +168,12 @@ class TransactionController extends Controller
             $supplierId = $user->id;
             $user->total_ulasan += 1;
             $user->save();
-
         }
 
-       // $ratingQuality = User::with('product.comment:rating')->select('rating')->get();
-        $ratings = Comment::with('product')->whereHas('product' , function ($query) use($supplierId) {
+        // $ratingQuality = User::with('product.comment:rating')->select('rating')->get();
+        $ratings = Comment::with('product')->whereHas('product', function ($query) use ($supplierId) {
             $query->whereUserId($supplierId);
-            })->select('rating')->get();
+        })->select('rating')->get();
 
         $count = 0;
         $ratingSum = 0;
@@ -178,22 +190,24 @@ class TransactionController extends Controller
             'status' => 'success',
             'message' => 'Ulasan berhasil dikirim'
         ], 201);
-
     }
 
-    public function cancel() {
-        $cancel = ResellerTransaction::with('user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::CANCEL)
+    public function cancel()
+    {
+        $cancel = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::CANCEL)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($cancel);
     }
 
-    public function returned() {
-        $returned = ResellerTransaction::with('user','reseller','coupon','reseller_transaction_detail','reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::RETURNED)
+    public function returned()
+    {
+        $returned = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail', 'reseller_transaction_detail.product')->whereTransactionStatus(TransactionStatus::RETURNED)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($returned);
     }
 
-    public function image(Request $request) {
+    public function image(Request $request)
+    {
         $thumbnailTransaction = Media::whereCode($request->media_code)->first();
         return response()->json([
             'data' => $thumbnailTransaction
