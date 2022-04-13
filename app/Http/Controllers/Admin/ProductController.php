@@ -285,6 +285,7 @@ class ProductController extends Controller
         //        $this->validate($request,[
         //            'image' => 'image|nullable'
         //        ]);
+        // die('masuk');
         if ($request->hasFile('image')) {
             $files = $request->file('image');
             // foreach ($files as $file) {
@@ -293,15 +294,16 @@ class ProductController extends Controller
             $fileType = $files->getClientOriginalExtension();
             $fileSize = $files->getSize();
             $filename = $uuid . '-' . $uuid2 . '.' . $fileType;
-            $storage = 'uploads/images/';
-            $files->move($storage, $filename);
+            $path = 'uploads/images/';
+            $files->move($path, $filename);
             // $path = $file->storeAs('public', $filename);
             Media::create([
+                'path'      => $path,
                 'file_name' => $filename,
                 'media_type' => MediaType::IMAGE,
                 'file_size' => $fileSize,
                 'code' => $product->media_code,
-                'category_type' => CategoryType::PRODUCT
+                'category_type' => CategoryType::PRODUCT,
             ]);
             // }
             \Brian2694\Toastr\Facades\Toastr::success('Berhasil diupdate:)', 'Success');
