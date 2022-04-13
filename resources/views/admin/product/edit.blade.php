@@ -181,7 +181,7 @@
                                     @foreach($media as $productImage)
                                         <div class="col-md-2 mr-4 mb-2">
                                             <a href="{{ route('admin.product.delete.image', ['id' => $productImage->id, 'product' => $product->id]) }}" onclick="return confirm('Yakin mau dihapus?')">
-                                                <img src="{{ $productImage->file_name ? asset('storage/app/public/'.$productImage->file_name) : '' }}" height="120" width="180">
+                                                <img src="{{ $productImage->file_name ? asset('/uploads/images/'.$productImage->file_name) : '' }}" height="120" width="180">
                                             </a>
                                         </div>
                                     @endforeach

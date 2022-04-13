@@ -16,7 +16,7 @@
                             <div class="row">
                                 <div class="col">
                                     <label for="image">Gambar</label>
-                                    <input type="file" class="form-control" name="image[]" value="{{ old('image') }}" multiple id="image" placeholder="Masukan Gambar">
+                                    <input type="file" class="form-control" name="image" value="{{ old('image') }}" multiple id="image" placeholder="Masukan Gambar">
                                     <p class="text-danger">{{ $errors->first('image') }}</p>
                                 </div>
                             </div>
