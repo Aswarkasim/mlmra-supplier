@@ -202,6 +202,13 @@ class ProductController extends Controller
     public function filterProductByCategory(Request $request)
     {
         $products = Product::whereCategoryId($request->category_id)->get();
+        // $products = Product::where('category_id', $request->category_id)->get();
+        return ProductResource::collection($products);
+    }
+
+    public function filterProductBySubCategory(Request $request)
+    {
+        $products = Product::where('sub_category_id', $request->sub_category_id)->get();
         return ProductResource::collection($products);
     }
 

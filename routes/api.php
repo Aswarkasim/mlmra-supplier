@@ -71,6 +71,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
             Route::get('cart', [ProductController::class, 'allCart']);
             Route::get('recomendation', [ProductController::class, 'recomendation']);
             Route::get('bycategory', [ProductController::class, 'filterProductByCategory']);
+            Route::get('bysubcategory', [ProductController::class, 'filterProductBySubCategory']);
             Route::post('cart', [ProductController::class, 'cart']);
             Route::post('increment/order/total', [ProductController::class, 'incrementOrder']);
             Route::post('decrement/order/total', [ProductController::class, 'decrementOrder']);
