@@ -29,21 +29,31 @@ class CheckOutController extends Controller
         // print_r($id);
         // die('masuk');
 
-        if ($address->status == StatusType::INACTIVE) {
-            foreach ($anotherAddress as $adress) {
-                $adress->status = StatusType::INACTIVE;
-                $adress->save();
-            }
-            $address->status = StatusType::ACTIVE;
-        } else {
-            $activeAddress = false;
+        // if ($address->status == StatusType::INACTIVE) {
+        //     foreach ($anotherAddress as $adress) {
+        //         $adress->status = StatusType::INACTIVE;
+        //         $adress->save();
+        //     }
+        //     $address->status = StatusType::ACTIVE;
+        //     $adress->save();
+        // } else {
+        //     $activeAddress = false;
+        // }
+
+        $address->status = StatusType::ACTIVE;
+        $address->save();
+
+        foreach ($anotherAddress as $item) {
+            $item->status = StatusType::INACTIVE;
+            $item->save();
         }
+
         return response()->json([
             'status' => 'Success',
             'anotherAddress' => $anotherAddress,
             'addessActive'  => $address,
             'data' => "Alamat Aktif"
-        ], 400);
+        ], 200);
     }
     public function shippingType(Request $request)
     {
