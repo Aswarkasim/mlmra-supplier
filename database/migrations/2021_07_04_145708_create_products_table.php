@@ -27,6 +27,7 @@ class CreateProductsTable extends Migration
             $table->integer('commision_persen')->nullable();
             $table->integer('point')->nullable();
             $table->integer('point_product')->nullable();
+            $table->integer('amount_sold')->nullable();
             $table->text('description');
             $table->string('media_code')->unique()->nullable();
             $table->string('status');
@@ -42,7 +43,6 @@ class CreateProductsTable extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('sub_category_id')->references('id')->on('sub_categories');
         });
-
     }
 
     /**

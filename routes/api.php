@@ -106,7 +106,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
         Route::group(['prefix' => 'brand'], function () {
             Route::get('filter/byabjad', [BrandController::class, 'filterBrandByAbjad']);
             Route::get('search', [BrandController::class, 'search']);
-            Route::get('filter/terpopuler', [BrandController::class, 'populer']);
+            Route::get('filter/popular', [BrandController::class, 'populer']);
         });
 
         Route::group(['prefix' => 'bank'], function () {

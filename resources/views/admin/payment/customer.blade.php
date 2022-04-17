@@ -45,7 +45,7 @@
                                             <td>{{ $payment->transaction->customer->full_name }}</td>
                                             <td>{{ $payment->status }}</td>
                                             <td>
-                                                <a href="" class="btn btn-primary">Confirm</a>
+                                                <a href="/admin/payment/confirm/{{$payment->id}}" class="btn btn-primary">Confirm</a>
                                             </td>
                                         </tr>
                                     @endforeach
