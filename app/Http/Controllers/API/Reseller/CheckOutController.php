@@ -140,6 +140,7 @@ class CheckOutController extends Controller
             $transaction->shipping_method = $request->shipping_method;
             $transaction->custom_courier_name = $request->custom_courier_name;
             $transaction->custom_courier_phone_number = $request->custom_courier_phone_number;
+            $transaction->custom_courier_address = $request->custom_courier_address;
             $transaction->courier_type = $request->courier_type;
             $transaction->payment_method = $request->payment_method;
             $transaction->ongkir_type = $request->ongkir_type;
@@ -152,6 +153,7 @@ class CheckOutController extends Controller
             $transaction->district_id = $request->district_id;
             $transaction->street = $request->street;
             $transaction->remarks = $request->catatan;
+            $transaction->bank_account_id = $request->bank_account_id;
             if ($transaction->save()) {
                 $lastTransaction = ResellerTransaction::whereWaybillNumber($waybillNumber)->first();
                 $productId = Product::whereId($request->product_id)->first();
@@ -200,6 +202,7 @@ class CheckOutController extends Controller
             $transaction->shipping_method = $request->shipping_method;
             $transaction->custom_courier_name = $request->custom_courier_name;
             $transaction->custom_courier_phone_number = $request->custom_courier_phone_number;
+            $transaction->custom_courier_address = $request->custom_courier_address;
             $transaction->courier_type = $request->courier_type;
             $transaction->payment_method = $request->payment_method;
             $transaction->ongkir_type = $request->ongkir_type;
@@ -212,6 +215,7 @@ class CheckOutController extends Controller
             $transaction->district_id = $request->district_id;
             $transaction->street = $request->street;
             $transaction->remarks = $request->catatan;
+            $transaction->bank_account_id = $request->bank_account_id;
             if ($transaction->save()) {
                 $lastTransaction = ResellerTransaction::whereWaybillNumber($waybillNumber)->first();
                 for ($i = 0; $i < count($request->transaction_detail_id); $i++) {
@@ -260,6 +264,7 @@ class CheckOutController extends Controller
             $transaction->shipping_method = $request->shipping_method;
             $transaction->custom_courier_name = $request->custom_courier_name;
             $transaction->custom_courier_phone_number = $request->custom_courier_phone_number;
+            $transaction->custom_courier_address = $request->custom_courier_address;
             $transaction->courier_type = $request->courier_type;
             $transaction->payment_method = $request->payment_method;
             $transaction->ongkir_type = $request->ongkir_type;
@@ -272,6 +277,7 @@ class CheckOutController extends Controller
             $transaction->district_id = $request->district_id;
             $transaction->street = $request->street;
             $transaction->remarks = $request->catatan;
+            $transaction->bank_account_id = $request->bank_account_id;
             if ($transaction->save()) {
                 $lastTransaction = ResellerTransaction::whereWaybillNumber($waybillNumber)->first();
                 for ($i = 0; $i < count($request->cart_id); $i++) {

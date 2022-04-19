@@ -23,10 +23,12 @@ class CreateResellerTransactionsTable extends Migration
             $table->string('shipping_method')->nullable();
             $table->string('custom_courier_name')->nullable();
             $table->string('custom_courier_phone_number')->nullable();
+            $table->text('custom_courier_address')->nullable();
             $table->string('courier_type')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('ongkir_type')->nullable(); // free, reguler, manual
             $table->string('payment_status')->nullable();
+            $table->unsignedBigInteger('bank_account_id')->nullable();
             $table->string('transaction_status')->nullable();
             $table->text('remarks')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
