@@ -32,7 +32,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Thumbnail</label> <br>
-                                    <img src="{{ $category->media ? asset('storage/app/public/'.$category->media->file_name) : '' }}" height="120" width="180">
+                                    <img src="{{ $category->media ? asset('/'.$category->media->path.$category->media->file_name) : '' }}" height="120" width="180">
                                     <div class="content">
                                         Preview
                                     </div>
@@ -43,7 +43,7 @@
                             <div class="box-footer mb-3 ml-4">
                                 <a href="{{ route('admin.category') }}" class="btn btn-info margin-r-5">CANCEL</a>
                                 @if($category->status == \App\Enums\StatusType::DRAFT() || $category->status == \App\Enums\StatusType::ARCHIVED())
-                                    <button type="button" class="btn btn-primary margin-r-5 js-category-action js-action-btn" data-action-type="SAVE">SAVE</button>
+                                    <button type="button"  class="btn btn-primary margin-r-5 js-category-action js-action-btn" data-action-type="SAVE">SAVE</button>
                                 @endif
                                 @if($category->status == \App\Enums\StatusType::DRAFT() || $category->status == \App\Enums\StatusType::PUBLISHED())
                                     <button type="button" class="btn btn-primary margin-r-5 js-category-action js-action-btn" data-action-type="PUBLISH">PUBLISH</button>
@@ -61,6 +61,6 @@
 @endsection
 
 @push('script')
-    <script src="{{ asset('public/admin/asset/js/category.js') }}"></script>
+    <script src="{{ asset('/admin/asset/js/category.js') }}"></script>
 @endpush
 

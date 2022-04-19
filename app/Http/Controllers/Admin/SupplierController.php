@@ -98,7 +98,7 @@ class SupplierController extends Controller
         $supplier->status = $request->status;
         $supplier->save();
         Toastr::success('Berhasil diupdate:)', 'Success');
-        return redirect(route('admin.supplier'))->with(['success' => 'Category Diperbaharui!']);
+        return redirect(route('admin.supplier'))->with(['success' => 'data Supplier Diperbaharui!']);
     }
 
     public function exports()
