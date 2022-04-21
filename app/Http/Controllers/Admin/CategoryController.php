@@ -102,9 +102,9 @@ class CategoryController extends Controller
 
         if ($request->hasFile('thumbnail')) {
 
-            if ($category->media != null) {
-                unlink('/' . $category->media->path . $category->media->image);
-            }
+            // if ($category->media != null) {
+            //     unlink('/' . $category->media->path . $category->media->image);
+            // }
 
             $media = $request->file('thumbnail');
             // dd($media);
