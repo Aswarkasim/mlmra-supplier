@@ -11,23 +11,31 @@ use Illuminate\Support\Facades\Validator;
 
 class BankAccountController extends Controller
 {
-    public static function getResellerId() {
+    public static function getResellerId()
+    {
         return Auth::guard('reseller-api')->id();
     }
 
-    public function list() {
-        $bankAccount = BankAccount::with('reseller')->whereResellerId(self::getResellerId())->first();
+    public function list()
+    {
+        $type = request('user_type');
+        if ($type == RoleType::RESELLER) {
+            $bankAccount = BankAccount::with('reseller')->whereResellerId(self::getResellerId())->first();
+        } else {
+            $bankAccount = BankAccount::where('user_type', $type)->get();
+        }
         return $bankAccount;
     }
 
-    public function add(Request $request) {
+    public function add(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'account_name' => 'required|string',
             'account_number' => 'required|unique:bank_accounts',
             'bank_name' => 'required|string'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -47,25 +55,26 @@ class BankAccountController extends Controller
         ], 201);
     }
 
-    public function edit(Request $request) {
-//        $validator = Validator::make($request->all(), [
-//            'account_name' => 'required|string',
-//            'account_number' => 'required|unique:bank_accounts,id,'.$request->id,
-//            'bank_name' => 'required|string'
-//        ]);
-//
-//        if($validator->fails()){
-//            $val = ['validation_error' => $validator->errors()];
-//            return response()->json($val, 400);
-//        }
-//
-//        $account = BankAccount::whereResellerId(self::getResellerId())->first();
-//        $account->user_type = RoleType::RESELLER;
-//        $account->account_name = $request->account_name;
-//        $account->account_number = $request->account_number;
-//        $account->bank_name = $request->bank_name;
-//        $account->reseller_id = self::getResellerId();
-//        $account->save();
+    public function edit(Request $request)
+    {
+        //        $validator = Validator::make($request->all(), [
+        //            'account_name' => 'required|string',
+        //            'account_number' => 'required|unique:bank_accounts,id,'.$request->id,
+        //            'bank_name' => 'required|string'
+        //        ]);
+        //
+        //        if($validator->fails()){
+        //            $val = ['validation_error' => $validator->errors()];
+        //            return response()->json($val, 400);
+        //        }
+        //
+        //        $account = BankAccount::whereResellerId(self::getResellerId())->first();
+        //        $account->user_type = RoleType::RESELLER;
+        //        $account->account_name = $request->account_name;
+        //        $account->account_number = $request->account_number;
+        //        $account->bank_name = $request->bank_name;
+        //        $account->reseller_id = self::getResellerId();
+        //        $account->save();
         return response()->json([
             'data' => [
                 'status' => 'success',
