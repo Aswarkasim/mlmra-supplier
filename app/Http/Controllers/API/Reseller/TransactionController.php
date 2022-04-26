@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\API\Reseller;
 
-use App\Enums\CategoryType;
-use App\Enums\MediaType;
-use App\Enums\PaymentStatus;
-use App\Enums\StatusType;
-use App\Enums\TransactionStatus;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\TransactionResource;
-use App\Models\Comment;
-use App\Models\Media;
-use App\Models\Payment;
-use App\Models\ResellerTransaction;
-use App\Models\ResellerTransactionDetail;
 use App\Models\User;
-use App\Traits\AdminGeneralTrait;
+use App\Models\Media;
+use Ramsey\Uuid\Uuid;
+use App\Models\Comment;
+use App\Models\Payment;
+use App\Enums\MediaType;
+use App\Enums\StatusType;
+use App\Enums\CategoryType;
+use App\Enums\PaymentStatus;
 use Illuminate\Http\Request;
+use App\Enums\TransactionStatus;
+use App\Traits\AdminGeneralTrait;
+use App\Models\ResellerTransaction;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Models\ResellerTransactionDetail;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\TransactionResource;
 
 class TransactionController extends Controller
 {
@@ -70,12 +71,39 @@ class TransactionController extends Controller
         }
         $media = new Media();
         $payment = new Payment();
-        $media = $this->uploadMedia($request->image, MediaType::IMAGE, CategoryType::PAYMENT, null);
+
+        // $media = $this->uploadMedia($request->image, MediaType::IMAGE, CategoryType::PAYMENT, null);
+
+        // $media = $request->file('image');
+        $media = $request->file('image');
+        // dd($media);
+        $uuid = Uuid::uuid4()->toString();
+        $uuid2 = Uuid::uuid4()->toString();
+        $fileType = $media->getClientOriginalExtension();
+        $fileSize = $media->getSize();
+
+        // $file_name = time() . "_" . $media->getClientOriginalName();
+        $file_name = $uuid . '-' . $uuid2 . '.' . $fileType;
+        $storage = 'uploads/images/';
+        $media->move($storage, $file_name);
+
+        $media = Media::create([
+            'file_name' => $file_name,
+            'media_type' => MediaType::IMAGE,
+            'file_size' => $fileSize,
+            'code'      => null,
+            'path'      => $storage,
+            'category_type' => CategoryType::SUPPLIER
+        ]);
+
         $payment->reseller_transaction_id = $request->transaction_id;
         $payment->status = PaymentStatus::CONFIRMATION;
         $payment->media_id = $media->id;
-        $request->file('image')->store('storage');
+        // $request->file('image')->store('storage');
+
+
         $payment->save();
+
         return response()->json([
             'status' => 'success',
             'message' => 'Pembayaran berhasil, silahkan tunggu pengecekan konfirmasi pembayaran anda!'

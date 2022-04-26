@@ -32,7 +32,14 @@
                         @endif
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-striped table-md">
+                                <style>
+                                    .bg-confirmation{
+                                        background-color: aqua;
+
+                                    }
+                                </style>
+                                
+                                <table class="table  table-md">
                                     <tr>
                                         <th>Username</th>
                                         <th>Nama Lengkap</th>
@@ -40,7 +47,10 @@
                                         <th>Action</th>
                                     </tr>
                                     @foreach($listResellerPayment as $payment)
-                                        <tr>
+                                        {{-- <tr class="{{ $payment->status == \App\Enums\PaymentStatus::CONFIRMATION ? 'bg-confirm' : '' }}"> --}}
+                                        <tr class=" @if ($payment->status == \App\Enums\PaymentStatus::CONFIRMATION)
+                                            {{ 'bg-confirmation' }}
+                                        @endif">
                                             <td>{{ $payment->resellerTransaction->reseller->username }}</td>
                                             <td>{{ $payment->resellerTransaction->reseller->full_name }}</td>
                                             <td>{{ $payment->status }}</td>
