@@ -31,9 +31,28 @@ class TransactionController extends Controller
         return Auth::guard('reseller-api')->id();
     }
 
+    function count_order()
+    {
+        $status = request('transaction_status');
+        $reseller_id = Auth::guard('reseller-api')->id();
+        // $reseller_id = 3;
+
+        if ($status) {
+            $order = ResellerTransaction::whereResellerId($reseller_id)->where('transaction_status', $status)->get();
+        } else {
+            $order = ResellerTransaction::whereResellerId($reseller_id)->get();
+        }
+
+        return response()->json([
+            'data' => [
+                'status'    => 'Success',
+                'total' => count($order),
+            ]
+        ], 200);
+    }
+
     public function unpaid()
     {
-        // die('masuk');
         $unpaid = ResellerTransaction::with('user', 'reseller', 'coupon', 'reseller_transaction_detail')->whereTransactionStatus(TransactionStatus::UNPAID)
             ->whereResellerId(Auth::guard('reseller-api')->id())->get();
         return TransactionResource::collection($unpaid);
@@ -61,6 +80,8 @@ class TransactionController extends Controller
 
     public function payment(Request $request)
     {
+        // die('masuk');
+
         $validator = Validator::make($request->all(), [
             'transaction_id' => 'required',
             'image' => 'required'
@@ -79,11 +100,12 @@ class TransactionController extends Controller
         // dd($media);
         $uuid = Uuid::uuid4()->toString();
         $uuid2 = Uuid::uuid4()->toString();
-        $fileType = $media->getClientOriginalExtension();
         $fileSize = $media->getSize();
 
         // $file_name = time() . "_" . $media->getClientOriginalName();
-        $file_name = $uuid . '-' . $uuid2 . '.' . $fileType;
+        // $file_name = $uuid . '-' . $uuid2 . '.' . $fileType;
+        $fileType = $media->getClientOriginalName();
+        $file_name = $uuid . '-' . $uuid2 .  $fileType;
         $storage = 'uploads/images/';
         $media->move($storage, $file_name);
 

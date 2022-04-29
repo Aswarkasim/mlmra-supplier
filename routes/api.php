@@ -33,6 +33,7 @@ use App\Http\Controllers\API\Customer\CustomerTransactionController;
 |
 */
 //
+// Route::get('count_order', [TransactionController::class, 'count_order']);
 Route::post('provinces', [RajaOngkirController::class, 'insertProvinces']);
 Route::post('city', [RajaOngkirController::class, 'insertCities']);
 //Route::post('district', [RajaOngkirController::class, 'insertDistrict']);
@@ -128,6 +129,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
         });
 
         Route::group(['prefix' => 'transaction'], function () {
+            Route::get('count_order', [TransactionController::class, 'count_order']);
             Route::get('unpaid', [TransactionController::class, 'unpaid']);
             Route::get('unpaid/single', [TransactionController::class, 'unpaid_single']);
             Route::post('pay', [TransactionController::class, 'payment']);
@@ -215,6 +217,7 @@ Route::group(['prefix' => 'customer', 'namespace' => 'Customer'], function () {
     });
 
     Route::group(['prefix' => 'transaction', 'middleware' => 'auth:customer-api'], function () {
+
         Route::get('unpaid', [CustomerTransactionController::class, 'unpaid']);
         Route::post('pay', [CustomerTransactionController::class, 'payment']);
         Route::get('process', [CustomerTransactionController::class, 'process']);
@@ -230,3 +233,5 @@ Route::group(['prefix' => 'customer', 'namespace' => 'Customer'], function () {
         Route::get('image', [CustomerTransactionController::class, 'image']);
     });
 });
+// Route::get('pay', [TransactionController::class, 'payment']);
+// Route::post('pay', [TransactionController::class, 'payment']);
