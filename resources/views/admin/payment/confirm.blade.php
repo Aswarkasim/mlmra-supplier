@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Bukti Pembayaran</label> <br>
-                                    <img src="{{ $payment->media ? asset('storage/'.$payment->media->file_name) : '' }}" height="120" width="180">
+                                    <img src="{{ $payment->media ? asset('/'.$payment->media->path.$payment->media->file_name) : '' }}" height="120" width="180">
                                     <div class="content">
                                         Preview
                                     </div>
