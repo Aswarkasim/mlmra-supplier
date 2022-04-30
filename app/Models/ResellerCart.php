@@ -37,7 +37,7 @@ class ResellerCart extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class)->with(['user', 'category', 'subcategory']);
+        return $this->belongsTo(Product::class)->with(['user', 'user.address', 'category', 'subcategory']);
         // return $this->belongsTo(Product::class);
     }
 }
