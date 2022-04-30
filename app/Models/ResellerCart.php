@@ -10,23 +10,33 @@ class ResellerCart extends Model
     protected $guarded = [];
     use HasFactory;
 
-    public function user(){
-        return $this->belongsTo(User::class);
+    public function user()
+    {
+        return $this->belongsTo(User::class)->with('address');
     }
 
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function subcategory(){
+    public function subcategory()
+    {
         return $this->belongsTo(SubCategory::class);
     }
 
-    public function reseller() {
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
+    }
+
+    public function reseller()
+    {
         return $this->belongsTo(Reseller::class);
     }
 
-    public function product() {
+    public function product()
+    {
         return $this->belongsTo(Product::class)->with(['user', 'category', 'subcategory']);
         // return $this->belongsTo(Product::class);
     }
