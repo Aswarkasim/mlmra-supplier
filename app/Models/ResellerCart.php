@@ -12,7 +12,7 @@ class ResellerCart extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->with('address');
     }
 
     public function category()
@@ -25,10 +25,10 @@ class ResellerCart extends Model
         return $this->belongsTo(SubCategory::class);
     }
 
-    public function address()
-    {
-        return $this->belongsTo(Address::class)->with('user');
-    }
+    // public function address()
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 
     public function reseller()
     {
@@ -37,7 +37,7 @@ class ResellerCart extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class)->with(['user', 'address.user', 'category', 'subcategory']);
+        return $this->belongsTo(Product::class)->with(['user', 'category', 'subcategory']);
         // return $this->belongsTo(Product::class);
     }
 }

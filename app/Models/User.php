@@ -47,11 +47,17 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function media() {
+    public function media()
+    {
         return $this->belongsTo(Media::class);
     }
 
-    public function product() {
+    public function product()
+    {
         return $this->hasMany(Product::class);
+    }
+    public function address()
+    {
+        return $this->belongsTo(Address::class);
     }
 }
