@@ -33,8 +33,8 @@ class TransactionController extends Controller
 
     function count_order()
     {
+        $reseller_id = request('reseller_id');
         $status = request('transaction_status');
-        $reseller_id = Auth::guard('reseller-api')->id();
         // $reseller_id = 3;
 
         if ($status) {

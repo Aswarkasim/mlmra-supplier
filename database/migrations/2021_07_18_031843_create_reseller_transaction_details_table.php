@@ -23,6 +23,7 @@ class CreateResellerTransactionDetailsTable extends Migration
             $table->string('varian_type')->nullable();
             $table->string('varian_taste')->nullable();
             $table->decimal('product_price')->nullable();
+            $table->integer('amount_order')->default(1);
             $table->timestamps();
         });
 

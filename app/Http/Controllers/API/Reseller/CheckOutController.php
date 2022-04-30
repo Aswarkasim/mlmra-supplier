@@ -160,6 +160,7 @@ class CheckOutController extends Controller
                 $transactionDetail1 = new ResellerTransactionDetail();
                 $transactionDetail1->reseller_transaction_id = $lastTransaction->id;
                 $transactionDetail1->product_id = $request->product_id;
+                $transactionDetail1->amount_order = $request->amount_order;
                 $transactionDetail1->varian_color = $request->varian_color;
                 $transactionDetail1->varian_weight = $request->varian_weight;
                 $transactionDetail1->varian_size = $request->varian_size;
@@ -223,6 +224,7 @@ class CheckOutController extends Controller
                     $transactionDetail2 = new ResellerTransactionDetail();
                     $transactionDetail2->reseller_transaction_id = $lastTransaction->id;
                     $transactionDetail2->product_id = $productTransaction->product_id;
+                    $transactionDetail2->amount_order = $productTransaction->amount_order;
                     $transactionDetail2->varian_color = $productTransaction->varian_color;
                     $transactionDetail2->varian_weight = $productTransaction->varian_weight;
                     $transactionDetail2->varian_size = $productTransaction->varian_size;
@@ -285,6 +287,7 @@ class CheckOutController extends Controller
                     $transactionDetail = new ResellerTransactionDetail();
                     $transactionDetail->reseller_transaction_id = $lastTransaction->id;
                     $transactionDetail->product_id = $product->product_id;
+                    $transactionDetail->amount_order = $product->amount_order;
                     $transactionDetail->varian_color = $product->varian_color;
                     $transactionDetail->varian_weight = $product->varian_weight;
                     $transactionDetail->varian_size = $product->varian_size;
