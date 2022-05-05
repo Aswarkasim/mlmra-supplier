@@ -126,9 +126,15 @@ class TransactionController extends Controller
 
         $payment->save();
 
+        $transaction = ResellerTransaction::find($request->transaction_id);
+        // print_r($transaction);
+        $transaction->transaction_status = TransactionStatus::PROCESS;
+        $transaction->save();
+
         return response()->json([
             'status' => 'success',
-            'message' => 'Pembayaran berhasil, silahkan tunggu pengecekan konfirmasi pembayaran anda!'
+            'message' => 'Pembayaran berhasil, silahkan tunggu pengecekan konfirmasi pembayaran anda!',
+            'data'     => $payment
         ], 201);
     }
 
