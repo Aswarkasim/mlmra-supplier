@@ -107,6 +107,7 @@ class CheckOutController extends Controller
 
     public function transaction(Request $request)
     {
+        // dd($request);
         // optional cart_id or product_id, and another
         $resellerId = Auth::guard('reseller-api')->id();
         $resellerAddress = Address::whereResellerId($resellerId)->whereStatus(StatusType::ACTIVE)->first();
@@ -224,7 +225,7 @@ class CheckOutController extends Controller
                     $transactionDetail2 = new ResellerTransactionDetail();
                     $transactionDetail2->reseller_transaction_id = $lastTransaction->id;
                     $transactionDetail2->product_id = $productTransaction->product_id;
-                    $transactionDetail2->order_amount = $productTransaction->order_amount;
+                    $transactionDetail2->order_amount = $request->order_amount;
                     $transactionDetail2->varian_color = $productTransaction->varian_color;
                     $transactionDetail2->varian_weight = $productTransaction->varian_weight;
                     $transactionDetail2->varian_size = $productTransaction->varian_size;
@@ -287,7 +288,7 @@ class CheckOutController extends Controller
                     $transactionDetail = new ResellerTransactionDetail();
                     $transactionDetail->reseller_transaction_id = $lastTransaction->id;
                     $transactionDetail->product_id = $product->product_id;
-                    $transactionDetail->order_amount = $product->order_amount;
+                    $transactionDetail->order_amount = $request->order_amount;
                     $transactionDetail->varian_color = $product->varian_color;
                     $transactionDetail->varian_weight = $product->varian_weight;
                     $transactionDetail->varian_size = $product->varian_size;
