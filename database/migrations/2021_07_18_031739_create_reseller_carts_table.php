@@ -23,6 +23,7 @@ class CreateResellerCartsTable extends Migration
             $table->decimal('varian_size')->nullable();
             $table->string('varian_type')->nullable();
             $table->string('varian_taste')->nullable();
+            $table->boolean('checkout')->default(false);
             $table->timestamps();
         });
 
