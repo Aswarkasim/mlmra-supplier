@@ -169,6 +169,8 @@ class CheckOutController extends Controller
                 $transactionDetail1->varian_taste = $request->varian_taste;
                 $transactionDetail1->product_price = $productId->reseller_price;
                 $transactionDetail1->save();
+
+                $this->checkoutStatus($request->product_id);
             }
             if (!$transaction || !$transactionDetail1) {
                 DB::rollBack();
@@ -233,6 +235,7 @@ class CheckOutController extends Controller
                     $transactionDetail2->varian_taste = $productTransaction->varian_taste;
                     $transactionDetail2->product_price = $productTransaction->product_price;
                     $transactionDetail2->save();
+                    $this->checkoutStatus($productTransaction->product_id);
                 }
             }
             if (!$transaction || !$transactionDetail2) {
@@ -296,6 +299,8 @@ class CheckOutController extends Controller
                     $transactionDetail->varian_taste = $product->varian_taste;
                     $transactionDetail->product_price = $product->product->reseller_price;
                     $transactionDetail->save();
+
+                    $this->checkoutStatus($product->product_id);
                 }
             }
             if (!$transaction || !$transactionDetail) {
@@ -318,6 +323,15 @@ class CheckOutController extends Controller
                 ], 201);
             }
         }
+    }
+
+    function checkoutStatus($product_id)
+    {
+        $reseller_id = Auth::guard('reseller-api')->id();
+        $cart = ResellerCart::where('reseller_id', $reseller_id)->first();
+
+        $cart->checkout = true;
+        $cart->save();
     }
 
     public function ongkirReguler(Request $request)
