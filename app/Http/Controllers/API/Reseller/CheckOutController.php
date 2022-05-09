@@ -170,7 +170,7 @@ class CheckOutController extends Controller
                 $transactionDetail1->product_price = $productId->reseller_price;
                 $transactionDetail1->save();
 
-                $this->checkoutStatus($request->product_id);
+                // $this->checkoutStatus($request->product_id);
             }
             if (!$transaction || !$transactionDetail1) {
                 DB::rollBack();
@@ -235,7 +235,7 @@ class CheckOutController extends Controller
                     $transactionDetail2->varian_taste = $productTransaction->varian_taste;
                     $transactionDetail2->product_price = $productTransaction->product_price;
                     $transactionDetail2->save();
-                    $this->checkoutStatus($productTransaction->product_id);
+                    // $this->checkoutStatus($productTransaction->product_id);
                 }
             }
             if (!$transaction || !$transactionDetail2) {
@@ -300,7 +300,7 @@ class CheckOutController extends Controller
                     $transactionDetail->product_price = $product->product->reseller_price;
                     $transactionDetail->save();
 
-                    $this->checkoutStatus($product->product_id);
+                    $this->checkoutStatus($request->cart_id[$i]);
                 }
             }
             if (!$transaction || !$transactionDetail) {
@@ -325,10 +325,12 @@ class CheckOutController extends Controller
         }
     }
 
-    function checkoutStatus($product_id)
+    function checkoutStatus($cart_id)
     {
-        $reseller_id = Auth::guard('reseller-api')->id();
-        $cart = ResellerCart::where('reseller_id', $reseller_id)->first();
+        // $reseller_id = Auth::guard('reseller-api')->id();
+        // $cart = ResellerCart::where('reseller_id', $reseller_id)->first();
+
+        $cart = ResellerCart::whereId($cart_id)->first();
 
         $cart->checkout = true;
         $cart->save();
