@@ -324,7 +324,7 @@ class ResellerAuthController extends Controller
             ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
                 'phone' => $phoneNumber,
                 'messageType' => 'otp',
-                'body' => "berikut adalah kode otp anda " . $otpCode
+                'body' => "Password anda akan di reset menjadi kata 'password'. Silakan klik link berikut untuk melakukan reset " . $otpCode
             ]);
 
             $otp = new OtpHistory();
