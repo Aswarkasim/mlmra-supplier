@@ -313,6 +313,7 @@ class ResellerAuthController extends Controller
         if (count($user) <= 0) {
             return response()->json([
                 'status' => 'success',
+                'reseller'  => $user,
                 'message' => 'Nomor handphone anda belum terdaftar'
             ], 201);
         } else {
