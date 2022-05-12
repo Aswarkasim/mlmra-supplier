@@ -310,7 +310,7 @@ class ResellerAuthController extends Controller
     {
         $phone = $request->phone_number;
         $user = User::where('phone_number', $phone)->first();
-        if (empty($user)) {
+        if (!$user) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Nomor handphone anda belum terdaftar'
