@@ -308,38 +308,39 @@ class ResellerAuthController extends Controller
 
     public function forgot(Request $request)
     {
-        //     $phone = $request->phone_number;
-        //     $reseller = Reseller::where('phone_number', $phone)->get();
-        //     print_r($reseller);
-        //     die;
-        //     if (count($reseller) <= 0) {
-        //         return response()->json([
-        //             'status' => 'Not Found',
-        //             'message' => 'Nomor handphone anda belum terdaftar'
-        //         ], 201);
-        //     } else {
-        $phoneNumber = $this->replacePhoneNumber($request->phone_number);
-        $otpCode = rand(0000, 9999);
-        $responses = Http::withHeaders([
-            'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
-            'Content-Type' => 'application/json'
-        ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
-            'phone' => $phoneNumber,
-            'messageType' => 'otp',
-            'body' => "Password anda akan di reset menjadi kata 'password'. Silakan klik link berikut untuk melakukan reset " . $otpCode
-        ]);
+        $phone = $request->phone_number;
+        $reseller = Reseller::where('phone_number', $phone)->get();
+        print_r($reseller);
+        die;
+        if (count($reseller) <= 0) {
+            return response()->json([
+                'status' => 'success',
+                'reseller'  => $reseller,
+                'message' => 'Nomor handphone anda belum terdaftar'
+            ], 201);
+        } else {
+            $phoneNumber = $this->replacePhoneNumber($request->phone_number);
+            $otpCode = rand(0000, 9999);
+            $responses = Http::withHeaders([
+                'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
+                'Content-Type' => 'application/json'
+            ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
+                'phone' => $phoneNumber,
+                'messageType' => 'otp',
+                'body' => "Password anda akan di reset menjadi kata 'password'. Silakan klik link berikut untuk melakukan reset " . $otpCode
+            ]);
 
-        $otp = new OtpHistory();
-        $otp->otp = $otpCode;
-        $otp->phone_number = $phoneNumber;
-        $otp->otp_expired = Carbon::now()->addMinutes(30);
-        $otp->save();
+            $otp = new OtpHistory();
+            $otp->otp = $otpCode;
+            $otp->phone_number = $phoneNumber;
+            $otp->otp_expired = Carbon::now()->addMinutes(30);
+            $otp->save();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Silahkan cek kode OTP anda!'
-        ], 201);
-        // }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Silahkan cek kode OTP anda!'
+            ], 201);
+        }
     }
 
     public function replacePhoneNumber($phoneNumber)
