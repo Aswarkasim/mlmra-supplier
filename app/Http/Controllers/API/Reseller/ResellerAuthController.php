@@ -310,8 +310,8 @@ class ResellerAuthController extends Controller
     {
         $phone = $request->phone_number;
         $reseller = Reseller::where('phone_number', $phone)->get();
-        print_r($reseller);
-        die;
+        // print_r($reseller);
+        // die;
         if (count($reseller) <= 0) {
             return response()->json([
                 'status' => 'success',
