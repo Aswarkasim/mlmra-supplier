@@ -308,27 +308,36 @@ class ResellerAuthController extends Controller
 
     public function forgot(Request $request)
     {
-        $phoneNumber = $this->replacePhoneNumber($request->phone_number);
-        $otpCode = rand(0000, 9999);
-        $responses = Http::withHeaders([
-            'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
-            'Content-Type' => 'application/json'
-        ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
-            'phone' => $phoneNumber,
-            'messageType' => 'otp',
-            'body' => "berikut adalah kode otp anda " . $otpCode
-        ]);
+        $phone = $request->phone_number;
+        $user = User::where('phone_number', $phone)->first();
+        if (empty($user)) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Nomor handphone anda belum terdaftar'
+            ], 201);
+        } else {
+            $phoneNumber = $this->replacePhoneNumber($request->phone_number);
+            $otpCode = rand(0000, 9999);
+            $responses = Http::withHeaders([
+                'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
+                'Content-Type' => 'application/json'
+            ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
+                'phone' => $phoneNumber,
+                'messageType' => 'otp',
+                'body' => "berikut adalah kode otp anda " . $otpCode
+            ]);
 
-        $otp = new OtpHistory();
-        $otp->otp = $otpCode;
-        $otp->phone_number = $phoneNumber;
-        $otp->otp_expired = Carbon::now()->addMinutes(30);
-        $otp->save();
+            $otp = new OtpHistory();
+            $otp->otp = $otpCode;
+            $otp->phone_number = $phoneNumber;
+            $otp->otp_expired = Carbon::now()->addMinutes(30);
+            $otp->save();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Silahkan cek kode OTP anda!'
-        ], 201);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Silahkan cek kode OTP anda!'
+            ], 201);
+        }
     }
 
     public function replacePhoneNumber($phoneNumber)
