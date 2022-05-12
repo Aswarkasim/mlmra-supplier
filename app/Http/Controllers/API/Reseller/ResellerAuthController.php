@@ -309,8 +309,8 @@ class ResellerAuthController extends Controller
     public function forgot(Request $request)
     {
         $phone = $request->phone_number;
-        $user = User::where('phone_number', $phone)->first();
-        if (!$user) {
+        $user = User::where('phone_number', $phone)->get();
+        if (count($user) <= 0) {
             return response()->json([
                 'status' => 'success',
                 'message' => 'Nomor handphone anda belum terdaftar'
