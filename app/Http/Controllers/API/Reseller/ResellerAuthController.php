@@ -314,8 +314,7 @@ class ResellerAuthController extends Controller
         //     die;
         //     if (count($reseller) <= 0) {
         //         return response()->json([
-        //             'status' => 'success',
-        //             'reseller'  => $reseller,
+        //             'status' => 'Not Found',
         //             'message' => 'Nomor handphone anda belum terdaftar'
         //         ], 201);
         //     } else {
