@@ -308,8 +308,9 @@ class ResellerAuthController extends Controller
 
     public function forgot(Request $request)
     {
-        $phone = $request->phone_number;
-        $reseller = Reseller::where('phone_number', $phone)->get();
+        // $phone = $request->phone_number;
+        $phoneNumber = $this->replacePhoneNumber($request->phone_number);
+        $reseller = Reseller::where('phone_number', $phoneNumber)->get();
         // print_r($reseller);
         // die;
         if (count($reseller) <= 0) {
@@ -319,7 +320,7 @@ class ResellerAuthController extends Controller
                 'message' => 'Nomor handphone anda belum terdaftar'
             ], 201);
         } else {
-            $phoneNumber = $this->replacePhoneNumber($request->phone_number);
+
             $otpCode = rand(0000, 9999);
             $responses = Http::withHeaders([
                 'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
@@ -327,7 +328,8 @@ class ResellerAuthController extends Controller
             ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
                 'phone' => $phoneNumber,
                 'messageType' => 'otp',
-                'body' => "Password anda akan di reset menjadi kata 'password'. Silakan klik link berikut untuk melakukan reset " . $otpCode
+                'body' => "Password anda akan di reset menjadi '123456789'. Silakan klik link berikut untuk melakukan reset 
+                https://supplier.malmora.com/api/reseller/reset?reset_password_token=".$reseller->reset_password_token."&phone_number=".$phoneNumber.
             ]);
 
             $otp = new OtpHistory();
@@ -341,6 +343,24 @@ class ResellerAuthController extends Controller
                 'message' => 'Silahkan cek kode OTP anda!'
             ], 201);
         }
+    }
+
+    function reset_password()
+    {
+        $token = request('reset_password_token');
+        $phoneNumber = $this->replacePhoneNumber(request('phone_number'));
+
+        $reseller = Reseller::where('phone_number', $phoneNumber)->where('reset_password_token', $token)->first();
+        // print_r($reseller);
+        // die;
+
+        $reseller->password = bcrypt('123456789');
+        $reseller->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Silahkan ubah password anda di pengaturan profil !!'
+        ], 201);
     }
 
     public function replacePhoneNumber($phoneNumber)

@@ -37,6 +37,7 @@ class CreateResellersTable extends Migration
             $table->integer('referal_count')->nullable();
             $table->decimal('referal_bonus')->nullable();
             $table->string('api_token')->nullable();
+            $table->string('reset_password_token')->nullable();
             $table->unsignedBigInteger('media_id')->nullable();
             $table->timestamps();
         });
