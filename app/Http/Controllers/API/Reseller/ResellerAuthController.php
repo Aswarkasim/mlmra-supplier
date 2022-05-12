@@ -42,10 +42,10 @@ class ResellerAuthController extends Controller
 {
     private static $JWT_TTL = 60;
 
-//    public function __construct()
-//    {
-//        $this->middleware('auth:reseller-api', ['except' => ['login', 'register']]);
-//    }
+    //    public function __construct()
+    //    {
+    //        $this->middleware('auth:reseller-api', ['except' => ['login', 'register']]);
+    //    }
 
 
     public function login(Request $request)
@@ -54,7 +54,7 @@ class ResellerAuthController extends Controller
             'phone_number' => 'required',
             'password' => 'required|string'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -75,7 +75,7 @@ class ResellerAuthController extends Controller
             'password_confirmation' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -83,7 +83,7 @@ class ResellerAuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'referal_code' => 'required'
             ]);
-            if($validator->fails()){
+            if ($validator->fails()) {
                 $val = ['validation_error' => $validator->errors()];
                 return response()->json($val, 400);
             }
@@ -104,7 +104,7 @@ class ResellerAuthController extends Controller
         ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
             'phone' => $phoneNumber,
             'messageType' => 'otp',
-            'body'=> "berikut adalah kode otp anda ". $otpCode
+            'body' => "berikut adalah kode otp anda " . $otpCode
         ]);
 
         $otp = new OtpHistory();
@@ -133,7 +133,7 @@ class ResellerAuthController extends Controller
             'password_confirmation' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -141,7 +141,7 @@ class ResellerAuthController extends Controller
             $validator = Validator::make($request->all(), [
                 'referal_code' => 'required'
             ]);
-            if($validator->fails()){
+            if ($validator->fails()) {
                 $val = ['validation_error' => $validator->errors()];
                 return response()->json($val, 400);
             }
@@ -212,26 +212,27 @@ class ResellerAuthController extends Controller
             'status'  => 'success',
             'message' => 'Successfully logged out'
         ], 200);
-
     }
 
-    public function product() {
+    public function product()
+    {
         $product = Product::whereStatus(StatusType::PUBLISHED)->get();
         return ProductResource::collection($product);
     }
 
-    public function detail(Request $request) {
+    public function detail(Request $request)
+    {
         $productDetail = Product::whereSlug($request->slug)->first();
         $media = Media::whereCode($productDetail->media_code)->get();
         $category = Category::whereId($productDetail->category_id)->get();
         $sub_category = SubCategory::whereId($productDetail->sub_category_id)->get();
         $user = User::whereId($productDetail->user_id)->get();
         $supplierAdress = Address::whereUserId($productDetail->user_id)->whereStatus(StatusType::ACTIVE)->first();
-        $varian_warna = ProductVarian::whereProductId($productDetail->id)->select('id','color','color_total')->get();
-        $varian_berat = ProductVarian::whereProductId($productDetail->id)->select('id','weight','weight_total')->get();
-        $varian_ukuran = ProductVarian::whereProductId($productDetail->id)->select('id','size','size_total')->get();
-        $varian_tipe = ProductVarian::whereProductId($productDetail->id)->select('id','type','type_total')->get();
-        $varian_rasa = ProductVarian::whereProductId($productDetail->id)->select('id','taste','taste_total')->get();
+        $varian_warna = ProductVarian::whereProductId($productDetail->id)->select('id', 'color', 'color_total')->get();
+        $varian_berat = ProductVarian::whereProductId($productDetail->id)->select('id', 'weight', 'weight_total')->get();
+        $varian_ukuran = ProductVarian::whereProductId($productDetail->id)->select('id', 'size', 'size_total')->get();
+        $varian_tipe = ProductVarian::whereProductId($productDetail->id)->select('id', 'type', 'type_total')->get();
+        $varian_rasa = ProductVarian::whereProductId($productDetail->id)->select('id', 'taste', 'taste_total')->get();
         $anotherProduct = Product::whereUserId($productDetail->user_id)
             ->where('slug', '!=', $productDetail->slug)
             ->whereStatus(StatusType::PUBLISHED)->get();
@@ -258,7 +259,7 @@ class ResellerAuthController extends Controller
             'media' => $media,
             ['varian_warna' => $varian_warna],
             ['varian_berat' => $varian_berat],
-            ['varian_ukuran'=> $varian_ukuran],
+            ['varian_ukuran' => $varian_ukuran],
             ['varian_tipe' => $varian_tipe],
             ['varian_rasa' => $varian_rasa],
             'another' => $anotherProduct,
@@ -290,7 +291,7 @@ class ResellerAuthController extends Controller
         ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
             'phone' => $phoneNumber,
             'messageType' => 'otp',
-            'body'=> "berikut adalah kode otp anda ". $otpCode
+            'body' => "berikut adalah kode otp anda " . $otpCode
         ]);
 
         $otp = new OtpHistory();
@@ -305,7 +306,33 @@ class ResellerAuthController extends Controller
         ], 201);
     }
 
-    public function replacePhoneNumber($phoneNumber) {
+    public function forgot(Request $request)
+    {
+        $phoneNumber = $this->replacePhoneNumber($request->phone_number);
+        $otpCode = rand(0000, 9999);
+        $responses = Http::withHeaders([
+            'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
+            'Content-Type' => 'application/json'
+        ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
+            'phone' => $phoneNumber,
+            'messageType' => 'otp',
+            'body' => "berikut adalah kode otp anda " . $otpCode
+        ]);
+
+        $otp = new OtpHistory();
+        $otp->otp = $otpCode;
+        $otp->phone_number = $phoneNumber;
+        $otp->otp_expired = Carbon::now()->addMinutes(30);
+        $otp->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Silahkan cek kode OTP anda!'
+        ], 201);
+    }
+
+    public function replacePhoneNumber($phoneNumber)
+    {
         if ($phoneNumber[0] == 0) {
             $phoneNumber = str_replace("08", "628", $phoneNumber);
         } else if ($phoneNumber[0] == "+") {
@@ -314,4 +341,3 @@ class ResellerAuthController extends Controller
         return $phoneNumber;
     }
 }
-

@@ -42,6 +42,7 @@ Route::post('city', [RajaOngkirController::class, 'insertCities']);
 Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
     Route::post('register', [ResellerAuthController::class, 'register']);
     Route::post('login', [ResellerAuthController::class, 'login']);
+    Route::post('forgot', [ResellerAuthController::class, 'forgot']);
     Route::post('check/validasi/send/otp', [ResellerAuthController::class, 'checkValidation']);
     Route::post('send/otp', [ResellerAuthController::class, 'sendOtp']);
     Route::post('tes', function (Request $request) {
