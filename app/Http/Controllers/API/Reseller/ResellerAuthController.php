@@ -329,7 +329,7 @@ class ResellerAuthController extends Controller
                 'phone' => $phoneNumber,
                 'messageType' => 'otp',
                 'body' => "Password anda akan di reset menjadi '123456789'. Silakan klik link berikut untuk melakukan reset 
-                https://supplier.malmora.com/api/reseller/reset?reset_password_token=".$reseller->reset_password_token."&phone_number=".$phoneNumber.
+                https://supplier.malmora.com/api/reseller/reset?reset_password_token=" . $reseller->reset_password_token . "&phone_number=" . $phoneNumber
             ]);
 
             $otp = new OtpHistory();
