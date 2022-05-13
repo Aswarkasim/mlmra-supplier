@@ -187,6 +187,22 @@ class TransactionController extends Controller
         ], 201);
     }
 
+    public function returnedOrder(Request $request)
+    {
+        $reseller_transaction = ResellerTransaction::whereId($request->transaction_id)->first();
+        $countProduct = count(ResellerTransactionDetail::whereResellerTransactionId($request->transaction_id)->get());
+        $reseller_transaction->transaction_status = TransactionStatus::RETURNED;
+        $reseller_transaction->save();
+
+        $user = User::whereId($reseller_transaction->user_id)->first();
+        $user->total_product_sold - $countProduct;
+        $user->save();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Pesanan dikembalikan!'
+        ], 201);
+    }
+
     public function trackTransaction(Request $request)
     {
         $responses = Http::withHeaders([

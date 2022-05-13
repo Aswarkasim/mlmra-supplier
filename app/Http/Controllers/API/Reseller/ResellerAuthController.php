@@ -310,10 +310,10 @@ class ResellerAuthController extends Controller
     {
         // $phone = $request->phone_number;
         $phoneNumber = $this->replacePhoneNumber($request->phone_number);
-        $reseller = Reseller::where('phone_number', $phoneNumber)->get();
+        $reseller = Reseller::where('phone_number', $phoneNumber)->first();
         // print_r($reseller);
         // die;
-        if (count($reseller) <= 0) {
+        if (!$reseller) {
             return response()->json([
                 'status' => 'success',
                 'reseller'  => $reseller,
@@ -345,6 +345,9 @@ class ResellerAuthController extends Controller
         }
     }
 
+    //===========tambahkan reset_token_password ketika register
+    // ===
+    // ===
     function reset_password()
     {
         $token = request('reset_password_token');

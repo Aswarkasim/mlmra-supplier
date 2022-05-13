@@ -145,6 +145,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
             Route::post('ulas/pesanan', [TransactionController::class, 'tambahUlasan']);
             Route::get('cancel', [TransactionController::class, 'cancel']);
             Route::get('returned', [TransactionController::class, 'returned']);
+            Route::post('returned/order', [TransactionController::class, 'returnedOrder']);
             Route::get('image', [TransactionController::class, 'image']);
         });
     });
