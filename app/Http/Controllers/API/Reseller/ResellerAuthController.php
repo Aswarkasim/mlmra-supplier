@@ -19,6 +19,7 @@ use App\Models\Address;
 use App\Models\ProductVarian;
 use App\Models\Comment;
 
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +37,7 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Resources\ResellerResource;
 use App\Http\Resources\ProductResource;
+use Ramsey\Uuid\Uuid;
 // use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
@@ -175,7 +177,8 @@ class ResellerAuthController extends Controller
             'level' => ResellerLevelType::PEMULA,
             'code' => $randomCode,
             'referal_code' => substr(str_shuffle(str_repeat("23456789abcdefghjkmnpqrstuvwxyz", 3)), 2, 4),
-            'password' => bcrypt($request->get('password'))
+            'password' => bcrypt($request->get('password')),
+            'reset_password_token' => Uuid::uuid4()->toString(),
         ]);
         $reseller = Reseller::whereCode($randomCode)->first();
 
