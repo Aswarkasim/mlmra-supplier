@@ -36,6 +36,11 @@ use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Http\Resources\ResellerResource;
 use App\Http\Resources\ProductResource;
+// use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
+
+
+
 
 
 class ResellerAuthController extends Controller
@@ -364,6 +369,40 @@ class ResellerAuthController extends Controller
             'status' => 'success',
             'message' => 'Silahkan ubah password anda di pengaturan profil !!'
         ], 201);
+    }
+
+
+    public function changePassword(Request $request)
+    {
+        $token = $request->reset_password_token;
+        $phoneNumber = $this->replacePhoneNumber($request->phone_number);
+        $reseller = Reseller::where('phone_number', $phoneNumber)->where('reset_password_token', $token)->first();
+
+        if (!$reseller) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Token tidak ditemukan'
+            ], 201);
+        } else {
+
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|string|confirmed',
+                'password_confirmation' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                $val = ['validation_error' => $validator->errors()];
+                return response()->json($val, 400);
+            }
+
+
+            $reseller->password = bcrypt($request->password);
+            $reseller->save();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Password berhasil diubah'
+            ], 201);
+        }
     }
 
     public function replacePhoneNumber($phoneNumber)

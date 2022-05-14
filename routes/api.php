@@ -44,6 +44,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
     Route::post('login', [ResellerAuthController::class, 'login']);
     Route::post('forgot', [ResellerAuthController::class, 'forgot']);
     Route::get('reset', [ResellerAuthController::class, 'reset_password']);
+    Route::post('password/change', [ResellerAuthController::class, 'changePassword']);
     Route::post('check/validasi/send/otp', [ResellerAuthController::class, 'checkValidation']);
     Route::post('send/otp', [ResellerAuthController::class, 'sendOtp']);
     Route::post('tes', function (Request $request) {
