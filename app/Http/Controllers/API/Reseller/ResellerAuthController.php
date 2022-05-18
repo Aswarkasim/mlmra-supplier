@@ -336,8 +336,7 @@ class ResellerAuthController extends Controller
             ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
                 'phone' => $phoneNumber,
                 'messageType' => 'otp',
-                'body' => "Password anda akan di reset menjadi '123456789'. Silakan klik link berikut untuk melakukan reset 
-                https://supplier.malmora.com/api/reseller/reset?reset_password_token=" . $reseller->reset_password_token . "&phone_number=" . $phoneNumber
+                'body' => "Password anda akan di reset menjadi '123456789'. Silakan klik link berikut untuk melakukan reset https://malmora.com/api/reseller/reset?reset_password_token=" . $reseller->reset_password_token . "&phone_number=" . $phoneNumber
             ]);
 
             $otp = new OtpHistory();
