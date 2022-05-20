@@ -114,7 +114,8 @@ class ProductController extends Controller
             if ($request->id && $cartCheck->save()) {
                 return response()->json([
                     'status' => "success",
-                    'message' => "Berhasil"
+                    'message' => "Berhasil",
+                    'data'     => $cartCheck
                 ], 201);
             } else {
                 return response()->json([
@@ -135,7 +136,8 @@ class ProductController extends Controller
             if ($request->id && $cart->save()) {
                 return response()->json([
                     'status' => "success",
-                    'message' => "Berhasil"
+                    'message' => "Berhasil",
+                    'data'  => $cart
                 ], 201);
             } else {
                 return response()->json([
