@@ -108,7 +108,8 @@ class ProductController extends Controller
             ->whereVarianWeight($request->varian_weight)
             ->whereVarianSize($request->varian_size)
             ->whereVarianType($request->varian_type)
-            ->whereVarianTaste($request->varian_taste)->first();
+            ->whereVarianTaste($request->varian_taste)
+            ->whereCheckout(0)->first();
         if ($cartCheck) {
             $cartCheck->order_count += 1;
             if ($request->id && $cartCheck->save()) {
