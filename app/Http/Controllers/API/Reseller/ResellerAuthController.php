@@ -328,15 +328,17 @@ class ResellerAuthController extends Controller
                 'message' => 'Nomor handphone anda belum terdaftar'
             ], 201);
         } else {
+            // $otpCode = rand(0000, 9999);
+            $reseller->reset_password_token = Uuid::uuid4()->toString();
+            $reseller->save();
 
-            $otpCode = rand(0000, 9999);
             $responses = Http::withHeaders([
                 'API-Key' => '1d359a2a419d92b599ea18bd93502b42f6ca82b6ee5d95489d8b2aa35a7f9eae',
                 'Content-Type' => 'application/json'
             ])->post('https://sendtalk-api.taptalk.io/api/v1/message/send_whatsapp', [
                 'phone' => $phoneNumber,
                 'messageType' => 'otp',
-                'body' => "Password anda akan di reset menjadi '123456789'. Silakan klik link berikut untuk melakukan reset https://malmora.com/api/reseller/reset?reset_password_token=" . $reseller->reset_password_token . "&phone_number=" . $phoneNumber
+                'body' => "Silakan klik link berikut untuk melakukan reset https://malmora.com/api/reseller/reset?reset_password_token=" . $reseller->reset_password_token . "&phone_number=" . $phoneNumber
             ]);
 
             $otp = new OtpHistory();
