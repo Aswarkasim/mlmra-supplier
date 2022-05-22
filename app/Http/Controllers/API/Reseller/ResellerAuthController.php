@@ -328,8 +328,9 @@ class ResellerAuthController extends Controller
                 'message' => 'Nomor handphone anda belum terdaftar'
             ], 201);
         } else {
-            // $otpCode = rand(0000, 9999);
-            $reseller->reset_password_token = Uuid::uuid4()->toString();
+            $token = rand(000000, 999999);
+            // $reseller->reset_password_token = Uuid::uuid4()->toString();
+            $reseller->reset_password_token = $token;
             $reseller->save();
 
             $responses = Http::withHeaders([
