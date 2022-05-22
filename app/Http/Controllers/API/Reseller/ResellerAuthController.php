@@ -341,11 +341,11 @@ class ResellerAuthController extends Controller
                 'body' => "Silakan klik link berikut untuk melakukan reset https://malmora.com/api/reseller/reset?reset_password_token=" . $reseller->reset_password_token . "&phone_number=" . $phoneNumber
             ]);
 
-            $otp = new OtpHistory();
-            $otp->otp = $otpCode;
-            $otp->phone_number = $phoneNumber;
-            $otp->otp_expired = Carbon::now()->addMinutes(30);
-            $otp->save();
+            // $otp = new OtpHistory();
+            // $otp->otp = $otpCode;
+            // $otp->phone_number = $phoneNumber;
+            // $otp->otp_expired = Carbon::now()->addMinutes(30);
+            // $otp->save();
 
             return response()->json([
                 'status' => 'success',
