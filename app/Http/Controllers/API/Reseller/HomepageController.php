@@ -26,45 +26,80 @@ class HomepageController extends Controller
 {
     public function allCategoryProduct()
     {
-        $productCategory = Category::with('media')->whereCategoryType(CategoryType::PRODUCT)
-            ->whereStatus(StatusType::PUBLISHED)->get();
+        $limit = request('limit');
+        if ($limit) {
+            $productCategory = Category::with('media')->whereCategoryType(CategoryType::PRODUCT)
+                ->whereStatus(StatusType::PUBLISHED)->limit($limit)->get();
+        } else {
+            $productCategory = Category::with('media')->whereCategoryType(CategoryType::PRODUCT)
+                ->whereStatus(StatusType::PUBLISHED)->get();
+        }
         return CategoryResource::collection($productCategory);
     }
 
-    public function newProduct() {
+    public function newProduct()
+    {
+        $limit = request('limit');
         $dateAgo = date("Y-m-d H:i:s", strtotime("-15 day"));
-        $newProduct = Product::where('updated_at', '>=', $dateAgo)->get();
+        if ($limit) {
+            $newProduct = Product::where('updated_at', '>=', $dateAgo)->limit($limit)->get();
+        } else {
+            $newProduct = Product::where('updated_at', '>=', $dateAgo)->get();
+        }
+
         return ProductNewResource::collection($newProduct);
     }
 
-    public function productPopular() {
-        $popularProduct = ProductFeature::where('total_comment', '>=', 10)
-            ->orWhere('total_transaction', '>=', 10)->orderByDesc('total_transaction')->get();
+    public function productPopular()
+    {
+        $limit = request('limit');
+        if ($limit) {
+            $popularProduct = ProductFeature::where('total_comment', '>=', 10)
+                ->orWhere('total_transaction', '>=', 10)->orderByDesc('total_transaction')->limit($limit)->get();
+        } else {
+            $popularProduct = ProductFeature::where('total_comment', '>=', 10)
+                ->orWhere('total_transaction', '>=', 10)->orderByDesc('total_transaction')->get();
+        }
+
         return ProductPopularResource::collection($popularProduct);
     }
 
-    public function product() {
-        $product = Product::whereStatus(StatusType::PUBLISHED)->get();
+    public function product()
+    {
+        $limit = request('limit');
+        if ($limit) {
+            $product = Product::whereStatus(StatusType::PUBLISHED)->limit($limit)->get();
+        } else {
+            $product = Product::whereStatus(StatusType::PUBLISHED)->get();
+        }
         return ProductResource::collection($product);
     }
 
-    public function shareProduct(Request $request) {
-//        $product = new ProductReseller();
-//        $product->reseller_id = Auth::guard('reseller-api')->id();
-//        $product->product_id = $request->product_id;
-//        if ($request->product_id && $product->save()) {
-//            return response()->json([
-//                'data' => [
-//                    'link' => 'DISINI AKAN ADA LINK YANG BISA DIBAGIKAN KE WA'
-//                ],
-//            ], 201);
-//        } else {
-//            return "Error";
-//        }
+    public function shareProduct(Request $request)
+    {
+        //        $product = new ProductReseller();
+        //        $product->reseller_id = Auth::guard('reseller-api')->id();
+        //        $product->product_id = $request->product_id;
+        //        if ($request->product_id && $product->save()) {
+        //            return response()->json([
+        //                'data' => [
+        //                    'link' => 'DISINI AKAN ADA LINK YANG BISA DIBAGIKAN KE WA'
+        //                ],
+        //            ], 201);
+        //        } else {
+        //            return "Error";
+        //        }
     }
 
-    public function allBrand() {
-        $brands = User::with('media')->whereStatus(StatusType::ACTIVE)->select("username", "media_id")->get();
+    public function allBrand()
+    {
+        $limit = request('limit');
+        if ($limit) {
+            $brands = User::with('media')->whereStatus(StatusType::ACTIVE)->select("username", "media_id")->limit($limit)->get();
+        } else {
+            $brands = User::with('media')->whereStatus(StatusType::ACTIVE)->select("username", "media_id")->get();
+        }
+
         return BrandResource::collection($brands);
     }
 }
