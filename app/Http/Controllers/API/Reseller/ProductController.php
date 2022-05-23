@@ -40,7 +40,7 @@ class ProductController extends Controller
         $varian_rasa = ProductVarian::whereProductId($productDetail->id)->select('id', 'taste', 'taste_total')->get();
         $anotherProduct = Product::whereUserId($productDetail->user_id)
             ->where('slug', '!=', $productDetail->slug)
-            ->whereStatus(StatusType::PUBLISHED)->get();
+            ->whereStatus(StatusType::PUBLISHED)->limit(12)->get();
         if ($request->has('rating')) {
             $comment = Comment::with('reseller', 'reseller.media')->whereProductId($productDetail->id)->whereRating($request->rating)->get();
         } else {
