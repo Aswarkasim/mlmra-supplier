@@ -16,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class CheckOutController extends Controller
 {
@@ -125,6 +126,16 @@ class CheckOutController extends Controller
                 'status' => 'failed',
                 'data' => "Silahkan isi alamat terlebih dahulu"
             ], 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'bank_account_id' => 'required',
+            'courier_type' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $val = ['validation_error' => $validator->errors()];
+            return response()->json($val, 400);
         }
 
         // untuk API Beli dari product
