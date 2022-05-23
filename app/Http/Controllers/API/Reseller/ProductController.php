@@ -198,7 +198,7 @@ class ProductController extends Controller
     {
         $product = Product::whereStatus(StatusType::PUBLISHED)
             ->whereCategoryId($request->category_id)
-            ->where('id', '!=', $request->id)->get();
+            ->where('id', '!=', $request->id)->limit(6)->get();
         return ProductResource::collection($product);
     }
 
