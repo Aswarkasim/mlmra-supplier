@@ -2,38 +2,44 @@
 
 namespace App\Http\Controllers\API\Reseller;
 
+use App\Models\Media;
+use Ramsey\Uuid\Uuid;
+use App\Models\Coupon;
+use http\Env\Response;
+use App\Models\Address;
+use App\Models\Referal;
+use App\Enums\MediaType;
+use App\Models\Reseller;
 use App\Enums\StatusType;
-use App\Http\Controllers\API\JsonFormatter;
+use App\Enums\CategoryType;
+use App\Models\PointHistory;
+use Illuminate\Http\Request;
+use PhpParser\Node\Expr\New_;
+use App\Models\ResellerCoupon;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\PointResource;
 use App\Http\Resources\ReferalResource;
 use App\Http\Resources\ResellerResource;
-use App\Models\Address;
-use App\Models\Coupon;
-use App\Models\PointHistory;
-use App\Models\Referal;
-use App\Models\Reseller;
-use App\Models\ResellerCoupon;
-use http\Env\Response;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\New_;
+use App\Http\Controllers\API\JsonFormatter;
 
 class ProfileController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         return ResellerResource::make(Auth::guard('reseller-api')->user());
     }
 
-    public function changePassword(Request $request) {
+    public function changePassword(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'current_password' => 'required',
             'password' => 'required|string|confirmed',
             'password_confirmation' => 'required'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -62,19 +68,22 @@ class ProfileController extends Controller
         ], 200);
     }
 
-    public function referal() {
+    public function referal()
+    {
         $user = auth('reseller-api')->user();
         $referals = Referal::whereReferalCode($user['referal_code'])->get();
         return ReferalResource::collection($referals);
     }
 
-    public function point() {
+    public function point()
+    {
         $user = auth('reseller-api')->user();
         $point_history = PointHistory::whereResellerId($user->id)->get();
         return PointResource::collection($point_history);
     }
 
-    public function swapCoupon(Request $request) {
+    public function swapCoupon(Request $request)
+    {
         $coupon = Coupon::whereId($request->coupon_id)->first();
         $reseller = auth('reseller-api')->user();
         $resellerCouponCheck = ResellerCoupon::whereCouponId($coupon->id)->first();
@@ -107,18 +116,21 @@ class ProfileController extends Controller
         }
     }
 
-    public function address() {
+    public function address()
+    {
         $resellerId = auth('reseller-api')->id();
         $mainAddress = Address::whereResellerId($resellerId)->get();
         return $mainAddress;
     }
 
-    public function detail(Request $request) {
+    public function detail(Request $request)
+    {
         $address = Address::whereId($request->id)->whereResellerId(auth('reseller-api')->id())->first();
         return response()->json($address);
     }
 
-    public function insertAddress(Request $request) {
+    public function insertAddress(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'address_name' => 'required',
             'phone_number' => 'required',
@@ -127,7 +139,7 @@ class ProfileController extends Controller
             'district_id' => 'required|numeric',
             'street' => 'required'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -154,7 +166,8 @@ class ProfileController extends Controller
         }
     }
 
-    public function editAddress(Request $request) {
+    public function editAddress(Request $request)
+    {
         $address = Address::whereId($request->id)->whereResellerId(auth('reseller-api')->id())->first();
         $validator = Validator::make($request->all(), [
             'address_name' => 'required',
@@ -164,7 +177,7 @@ class ProfileController extends Controller
             'district_id' => 'required|numeric',
             'street' => 'required'
         ]);
-        if($validator->fails()){
+        if ($validator->fails()) {
             $val = ['validation_error' => $validator->errors()];
             return response()->json($val, 400);
         }
@@ -185,7 +198,8 @@ class ProfileController extends Controller
         }
     }
 
-    public function changeStatus(Request $request) {
+    public function changeStatus(Request $request)
+    {
         $currentAddress = Address::whereId($request->id)->whereResellerId(auth('reseller-api')->id())->first();
         $checkMainAddress = Address::whereResellerId(auth('reseller-api')->id())->where('id', '!=', $request->id)->get();
         $isAnyActive = false;
@@ -201,7 +215,7 @@ class ProfileController extends Controller
         if ($currentAddress->status == StatusType::ACTIVE) {
             $message = "Maaf, status ini sudah dalam kondisi active";
             $status = "failed";
-        } else if ($currentAddress->status == StatusType::INACTIVE && $isAnyActive){
+        } else if ($currentAddress->status == StatusType::INACTIVE && $isAnyActive) {
             $addressWillDelete = Address::whereId($addressIdActive)->whereResellerId(auth('reseller-api')->id())->first();
             $address->delete();
             $message = "Status berhasil diubah menjadi alamat utama";
@@ -213,6 +227,63 @@ class ProfileController extends Controller
             'status' => $status,
             'message' => $message
         ], 200);
+    }
 
+    function  updateProfile(Request $request)
+    {
+
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required',
+            'phone_number' => 'required',
+            'birth_date' => 'required',
+            'gender' => 'required',
+            'email' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $val = ['validation_error' => $validator->errors()];
+            return response()->json($val, 400);
+        }
+
+        $reseller_id = Auth::guard('reseller-api')->id();
+        $reseller = Reseller::whereId($reseller_id)->first();
+
+        $media = '';
+
+        if ($request->hasFile('image')) {
+            $files = $request->file('image');
+            // foreach ($files as $file) {
+            $uuid = Uuid::uuid4()->toString();
+            $uuid2 = Uuid::uuid4()->toString();
+            $fileType = $files->getClientOriginalExtension();
+            $fileSize = $files->getSize();
+            $filename = $uuid . '-' . $uuid2 . '.' . $fileType;
+            $path = 'uploads/images/';
+            $files->move($path, $filename);
+            // $path = $file->storeAs('public', $filename);
+            $media = Media::create([
+                'path'      => $path,
+                'file_name' => $filename,
+                'media_type' => MediaType::IMAGE,
+                'file_size' => $fileSize,
+                'code' => null,
+                'category_type' => CategoryType::RESELLER,
+            ]);
+            // }
+        }
+
+        $reseller->full_name = $request->full_name;
+        $reseller->phone_number = $request->phone_number;
+        $reseller->birth_date = $request->birth_date;
+        $reseller->gender   = $request->gender;
+        $reseller->email   = $request->email;
+        $reseller->media_id = $media != '' ? $media->id : $reseller->media_id;
+
+        $reseller->save();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profile Updated'
+        ], 201);
     }
 }

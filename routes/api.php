@@ -96,6 +96,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
 
         Route::group(['prefix' => 'profile'], function () {
             Route::get('', [ProfileController::class, 'index']);
+            Route::post('/update', [ProfileController::class, 'updateProfile']);
             Route::post('password/change', [ProfileController::class, 'changePassword']);
             Route::get('referal', [ProfileController::class, 'referal']);
             Route::get('point', [ProfileController::class, 'point']);
