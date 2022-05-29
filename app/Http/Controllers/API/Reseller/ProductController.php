@@ -23,6 +23,15 @@ use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
+    function productBySupplier()
+    {
+        $supplier_id = request('supplier_id');
+        $limit = request('limit');
+        $product = Product::whereStatus(StatusType::PUBLISHED)->whereUserId($supplier_id)->limit($limit)->get();
+
+        return ProductResource::collection($product);
+    }
+
     public function detail(Request $request)
     {
 

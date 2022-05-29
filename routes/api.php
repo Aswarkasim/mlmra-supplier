@@ -70,6 +70,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
         });
 
         Route::group(['prefix' => 'product'], function () {
+            Route::get('supplier', [ProductController::class, 'productBySupplier']);
             Route::get('detail', [ProductController::class, 'detail']);
             Route::get('beli', [ProductController::class, 'beli']);
             Route::get('cart', [ProductController::class, 'allCart']);
