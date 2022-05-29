@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Http;
 class CartResource extends JsonResource
 {
 
-    public static function getAddress() {
+    public static function getAddress()
+    {
         $productId = ResellerCart::whereResellerId(Auth::guard('reseller-api')->id())->first();
         if (!$productId) {
             return response()->json([
@@ -41,7 +42,7 @@ class CartResource extends JsonResource
         $district = json_decode($district, true);
         $cityName = $city['rajaongkir']['results']['city_name'];
         $districtName = $district['rajaongkir']['results']['subdistrict_name'];
-        return $cityName. ' - ' .$districtName;
+        return $cityName . ' - ' . $districtName;
     }
 
 
@@ -55,8 +56,8 @@ class CartResource extends JsonResource
                 // 'sub_category' => $this->subcategory ? $this->subcategory->name : null,
                 'media' => Media::whereCode($this->media_code)->get(),
             ],
-            'dikirim_dari' => self::getAddress()
-            
+            // 'dikirim_dari' => self::getAddress()
+
         ];
     }
 }
