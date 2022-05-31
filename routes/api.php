@@ -21,6 +21,7 @@ use App\Http\Controllers\API\Customer\AddressCustomer;
 use App\Http\Controllers\API\Customer\ProductCustomer;
 use App\Http\Controllers\API\Customer\CustomerCheckoutController;
 use App\Http\Controllers\API\Customer\CustomerTransactionController;
+use App\Http\Controllers\API\Reseller\FlashsaleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
     Route::get('gallery/detail', [ResellerAuthController::class, 'detail']);
 
 
+
     Route::group(['middleware' => 'auth:reseller-api'], function () {
 
         Route::post('logout', [ResellerAuthController::class, 'logout']);
@@ -67,6 +69,11 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
             Route::get('product/new', [HomepageController::class, 'newProduct']);
             Route::get('product/popular', [HomepageController::class, 'productPopular']);
             Route::post('product/share', [HomepageController::class, 'shareProduct']);
+        });
+
+        Route::group(['prefix' => 'flashsale'], function () {
+            Route::get('', [FlashsaleController::class, 'index']);
+            Route::post('/create', [FlashsaleController::class, 'create']);
         });
 
         Route::group(['prefix' => 'product'], function () {
