@@ -53,7 +53,7 @@
                                 <div class="form-group">
                                     <label>Thumbnail</label> <br>
                                     {{-- <img src="{{ $supplier->media ? asset('storage/'.$supplier->media->file_name) : '' }}" height="120" width="180"> --}}
-                                    <img src="{{ $supplier->media ? asset('uploads/images/'.$supplier->media->file_name) : '' }}" width="180px">
+                                    <img src="{{ $supplier->media ? asset($supplier->media->path.$supplier->media->file_name) : '' }}" width="180px">
                                     <div class="content">
                                         Preview
                                     </div>

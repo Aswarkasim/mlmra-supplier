@@ -85,6 +85,7 @@ class SupplierController extends Controller
                 'media_type' => MediaType::IMAGE,
                 'file_size' => $fileSize,
                 'code'      => null,
+                'path'      => $storage,
                 'category_type' => CategoryType::SUPPLIER
             ]);
         }
