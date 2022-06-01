@@ -41,7 +41,7 @@ class CategoryController extends Controller
         $media = new Media();
         $category = new Category();
         // if ($request->hasFile('thumbnail')) {
-        //     $media = $this->uploadMedia($request->thumbnail, MediaType::IMAGE, CategoryType::CATEGORY, null);
+        // $media = $this->uploadMedia($request->thumbnail, MediaType::IMAGE, CategoryType::CATEGORY, null);
         // }
         if ($request->hasFile('thumbnail')) {
 
