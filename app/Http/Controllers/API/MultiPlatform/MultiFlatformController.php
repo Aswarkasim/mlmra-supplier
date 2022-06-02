@@ -22,19 +22,21 @@ use Illuminate\Support\Facades\Auth;
 
 class MultiFlatformController extends Controller
 {
-    public function coupon() {
+    public function coupon()
+    {
         $coupons = Coupon::whereStatus(StatusType::PUBLISHED)->get();
         return CouponResource::collection($coupons);
     }
 
-    public function resellerCoupon() {
+    public function resellerCoupon()
+    {
         $user = auth('reseller-api')->id();
         $resellerCoupon = ResellerCoupon::whereResellerId($user)->where('time_applied', '>', 0)->get();
         return CouponResource::collection($resellerCoupon);
-
     }
 
-    public function checkCoupon(Request $request) {
+    public function checkCoupon(Request $request)
+    {
         $coupon = $request->coupon_name;
         $couponCheck = Coupon::whereName($coupon)->first();
         if (!$couponCheck) {
@@ -50,17 +52,20 @@ class MultiFlatformController extends Controller
         }
     }
 
-    public function searchProduct(Request $request) {
+    public function searchProduct(Request $request)
+    {
         $products = Product::where('title', 'LIKE', '%' . $request->title . '%')->get();
         return ProductResource::collection($products);
     }
 
-    public function notification(Request $request) {
+    public function notification(Request $request)
+    {
         $notifications = Notification::whereStatus(StatusType::PUBLISHED)->whereNotificationType(strtoupper($request->type))->get();
         return NotificationResource::collection($notifications);
     }
 
-    public function chatSupplier(Request $request) {
+    public function chatSupplier(Request $request)
+    {
         $url = "https://api.whatsapp.com/send?phone=.$request->phone_number.&text=Saya ingin bertanya mengenai produk anda";
         return response()->json([
             'data' => [
@@ -71,19 +76,22 @@ class MultiFlatformController extends Controller
         ], 200);
     }
 
-    public function inviteFriends() {
+    public function inviteFriends()
+    {
         $referalCode = auth('reseller-api')->user()->referal_code;
-        $url = env('APP_REGISTER_RESELLER_URL');
+        // $url = env('APP_REGISTER_RESELLER_URL');
+        $url = 'https://malmora.com/register';
         return response()->json([
             'data' => [
                 'status' => 'success',
                 'message' => 'Silahkan klik link!',
-                'link' => "whatsapp://send?text=Silahkan bergabung dengan kami menggunakan kode referal : ".$referalCode. " di link ".$url
+                'link' => "whatsapp://send?text=Silahkan bergabung dengan kami menggunakan kode referal : " . $referalCode . " di link " . $url
             ],
         ], 200);
     }
 
-    public function shareProduct(Request $request) {
+    public function shareProduct(Request $request)
+    {
         $existProduct = ProductReseller::whereProductId($request->product_id)->first();
         $url = env('APP_PRODUCT_DETAIL_URL');
         $category = Product::whereId($request->product_id)->select('category_id')->first();
@@ -104,7 +112,7 @@ class MultiFlatformController extends Controller
                 'data' => [
                     'status' => 'success',
                     'message' => 'Silahkan klik link!',
-                    'link' => "whatsapp://send?text=Silahkan melihat produk kami : ". $url. "?id=" .$product->id
+                    'link' => "whatsapp://send?text=Silahkan melihat produk kami : " . $url . "?id=" . $product->id
                 ],
             ], 201);
         } else {
@@ -117,7 +125,8 @@ class MultiFlatformController extends Controller
         }
     }
 
-    public function rekeningBersama() {
+    public function rekeningBersama()
+    {
         $admin = User::where('isAdmin', '=', 1)->first();
         $bank_account = BankAccount::with('user')->whereUserId($admin->id)->first();
         return response()->json([
@@ -125,14 +134,16 @@ class MultiFlatformController extends Controller
         ], 200);
     }
 
-    public function imageUrl() {
+    public function imageUrl()
+    {
         return \env('APP_IMAGE_URL');
     }
 
-    public function mediaCode(Request $request) {
+    public function mediaCode(Request $request)
+    {
         $media = Media::whereCode($request->code)->get();
         return response()->json([
             'media' => $media
-        ],200);
+        ], 200);
     }
 }
