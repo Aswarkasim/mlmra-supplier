@@ -27,6 +27,7 @@ class CreateResellerTransactionsTable extends Migration
             $table->string('courier_type')->nullable();
             $table->string('payment_method')->nullable();
             $table->string('ongkir_type')->nullable(); // free, reguler, manual
+            $table->string('resi')->nullable(); // free, reguler, manual
             $table->string('payment_status')->nullable();
             $table->unsignedBigInteger('bank_account_id')->nullable();
             $table->string('transaction_status')->nullable();

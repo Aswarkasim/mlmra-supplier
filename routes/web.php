@@ -41,32 +41,32 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
 
     // Homepage
-//    Route::group(['prefix' => 'homepage', 'middleware' => 'check.permission.admin'], function () {
-//        // Main Content
-//        Route::group(['prefix' => 'MainContent'], function () {
-//            Route::get('edit', [HomepageController::class, 'editMainContent'])->name('admin.mainContent.edit');
-//            Route::post('update', [HomepageController::class, 'updateMainContent'])->name('admin.mainContent.update');
-//        });
-//        // Featured
-//        Route::group(['prefix' => 'featured'], function () {
-//            Route::get('/', [HomepageController::class, 'featured'])->name('admin.featured');
-//            Route::get('create', [HomepageController::class, 'createFeatured'])->name('admin.featured.create');
-//            Route::get('/edit/banner', [HomepageController::class, 'editFeaturedBanner'])->name('admin.featured.banner.edit');
-//            Route::post('/update/banner', [HomepageController::class, 'updateFeaturedBanner'])->name('admin.featured.banner.update');
-//            Route::get('edit/{id}', [HomepageController::class, 'editFeatured'])->name('admin.featured.edit');
-//            Route::post('save', [HomepageController::class, 'saveFeatured'])->name('admin.featured.save');
-//            Route::post('update/{id}', [HomepageController::class, 'updateFeatured'])->name('admin.featured.update');
-//        });
-//
-//        // Keuntungan
-//        Route::group(['prefix' => 'keuntungan'], function () {
-//            Route::get('/', [HomepageController::class, 'keuntungan'])->name('admin.keuntungan');
-//            Route::get('create', [HomepageController::class, 'createKeuntungan'])->name('admin.keuntungan.create');
-//            Route::get('edit/{id}', [HomepageController::class, 'editKeuntungan'])->name('admin.keuntungan.edit');
-//            Route::post('save', [HomepageController::class, 'saveKeuntungan'])->name('admin.keuntungan.save');
-//            Route::post('update/{id}', [HomepageController::class, 'updateKeuntungan'])->name('admin.keuntungan.update');
-//        });
-//    });
+    //    Route::group(['prefix' => 'homepage', 'middleware' => 'check.permission.admin'], function () {
+    //        // Main Content
+    //        Route::group(['prefix' => 'MainContent'], function () {
+    //            Route::get('edit', [HomepageController::class, 'editMainContent'])->name('admin.mainContent.edit');
+    //            Route::post('update', [HomepageController::class, 'updateMainContent'])->name('admin.mainContent.update');
+    //        });
+    //        // Featured
+    //        Route::group(['prefix' => 'featured'], function () {
+    //            Route::get('/', [HomepageController::class, 'featured'])->name('admin.featured');
+    //            Route::get('create', [HomepageController::class, 'createFeatured'])->name('admin.featured.create');
+    //            Route::get('/edit/banner', [HomepageController::class, 'editFeaturedBanner'])->name('admin.featured.banner.edit');
+    //            Route::post('/update/banner', [HomepageController::class, 'updateFeaturedBanner'])->name('admin.featured.banner.update');
+    //            Route::get('edit/{id}', [HomepageController::class, 'editFeatured'])->name('admin.featured.edit');
+    //            Route::post('save', [HomepageController::class, 'saveFeatured'])->name('admin.featured.save');
+    //            Route::post('update/{id}', [HomepageController::class, 'updateFeatured'])->name('admin.featured.update');
+    //        });
+    //
+    //        // Keuntungan
+    //        Route::group(['prefix' => 'keuntungan'], function () {
+    //            Route::get('/', [HomepageController::class, 'keuntungan'])->name('admin.keuntungan');
+    //            Route::get('create', [HomepageController::class, 'createKeuntungan'])->name('admin.keuntungan.create');
+    //            Route::get('edit/{id}', [HomepageController::class, 'editKeuntungan'])->name('admin.keuntungan.edit');
+    //            Route::post('save', [HomepageController::class, 'saveKeuntungan'])->name('admin.keuntungan.save');
+    //            Route::post('update/{id}', [HomepageController::class, 'updateKeuntungan'])->name('admin.keuntungan.update');
+    //        });
+    //    });
 
     // Product
     Route::group(['prefix' => 'product'], function () {
@@ -151,9 +151,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     // Supplier
     Route::group(['prefix' => 'supplier', 'middleware' => 'check.permission.admin'], function () {
         Route::get('/', [SupplierController::class, 'index'])->name('admin.supplier');
-//        Route::get('create', [SupplierController::class, 'create'])->name('admin.supplier.create');
+        //        Route::get('create', [SupplierController::class, 'create'])->name('admin.supplier.create');
         Route::get('edit/{id}', [SupplierController::class, 'edit'])->name('admin.supplier.edit');
-//        Route::post('save', [SupplierController::class, 'save'])->name('admin.supplier.save');
+        //        Route::post('save', [SupplierController::class, 'save'])->name('admin.supplier.save');
         Route::post('update/{id}', [SupplierController::class, 'update'])->name('admin.supplier.update');
         Route::get('reports', [SupplierController::class, 'exports'])->name('admin.supplier.reports');
     });
@@ -161,9 +161,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     // Reseller
     Route::group(['prefix' => 'reseller'], function () {
         Route::get('/', [ResellerController::class, 'index'])->name('admin.reseller');
-//        Route::get('create', [SupplierController::class, 'create'])->name('admin.reseller.create');
+        //        Route::get('create', [SupplierController::class, 'create'])->name('admin.reseller.create');
         Route::get('edit/{id}', [ResellerController::class, 'edit'])->name('admin.reseller.edit')->middleware('check.permission.admin');
-//        Route::post('save', [SupplierController::class, 'save'])->name('admin.reseller.save');
+        //        Route::post('save', [SupplierController::class, 'save'])->name('admin.reseller.save');
         Route::post('update/{id}', [ResellerController::class, 'update'])->name('admin.reseller.update');
         Route::get('reports', [ResellerController::class, 'exports'])->name('admin.reseller.reports');
     });
@@ -171,9 +171,9 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     // Customer
     Route::group(['prefix' => 'customer', 'middleware' => 'check.permission.admin'], function () {
         Route::get('/', [CustomerController::class, 'index'])->name('admin.customer');
-//        Route::get('create', [SupplierController::class, 'create'])->name('admin.reseller.create');
+        //        Route::get('create', [SupplierController::class, 'create'])->name('admin.reseller.create');
         Route::get('edit/{id}', [CustomerController::class, 'edit'])->name('admin.customer.edit')->middleware('check.permission.admin');;
-//        Route::post('save', [SupplierController::class, 'save'])->name('admin.reseller.save');
+        //        Route::post('save', [SupplierController::class, 'save'])->name('admin.reseller.save');
         Route::post('update/{id}', [CustomerController::class, 'update'])->name('admin.customer.update');
     });
 
@@ -200,6 +200,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::get('/customer', [TransactionController::class, 'customerTransaction'])->name('admin.customerTransaction');
         Route::get('/confirmation/{id}/{status}', [TransactionController::class, 'confirmation'])->name('admin.confirmation');
         Route::post('/confirmation/process', [TransactionController::class, 'processConfirmation'])->name('process.confirmation');
+        Route::post('/resi/update', [TransactionController::class, 'updateResi'])->name('resi.update');
     });
 
     // Pembayaran
@@ -224,7 +225,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::get('edit/{id}', [BankAccountController::class, 'edit'])->name('admin.bankAccount.edit');
         Route::post('update/{id}', [BankAccountController::class, 'update'])->name('admin.bankAccount.update');
     });
-
 });
 
 Auth::routes();

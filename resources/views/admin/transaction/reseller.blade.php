@@ -43,8 +43,18 @@
                                         <tr>
                                             <td>{{ $transaction->reseller->username }}</td>
                                             <td>{{ $transaction->reseller->full_name }}</td>
-                                            <td>{{ $transaction->transaction_status }}</td>
                                             <td>
+                                                {{ $transaction->transaction_status }}
+                                                 <br>
+                                                {{$transaction->resi}}
+                                            <br>
+                                            
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary text-right mb-2" id="modal-resi" onclick="getTransactionId({{$transaction->id}})" data-toggle="modal" data-target="#exampleModal6">
+                                                        Resi
+                                                    </button>
+
                                                 @if($transaction->transaction_status == \App\Enums\TransactionStatus::UNPAID)
                                                     <a href="{{ route('admin.confirmation', ['id' => $transaction->id, 'status' => $transaction->transaction_status]) }}" class="btn btn-primary">Konfirmasi Pembayaran Admin</a>
                                                 @elseif($transaction->transaction_status == \App\Enums\TransactionStatus::PROCESS)
@@ -122,3 +132,44 @@
     </div>
 </div>
 
+
+
+{{-- RESI MODAL --}}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Resi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('resi.update') }}" name="form-product" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="card-body">
+                        <div class="form-group">
+                            <input type="hidden" name="transactionIdResi" id="transaction-id-resi">
+                           <input type="number" class="form-control" name="resi" placeholder="Example : 2412412">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    function getTransactionId(id) {
+        $('#transaction-id').val(id);
+        //set value transaction id resi from this id
+        $('#transaction-id-resi').val(id);
+    }
+</script>
