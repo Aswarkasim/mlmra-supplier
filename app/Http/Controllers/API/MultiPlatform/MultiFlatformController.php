@@ -80,7 +80,7 @@ class MultiFlatformController extends Controller
     {
         $referalCode = auth('reseller-api')->user()->referal_code;
         // $url = env('APP_REGISTER_RESELLER_URL');
-        $url = 'https://malmora.com/register';
+        $url = 'https://malmora.com/daftar';
         return response()->json([
             'data' => [
                 'status' => 'success',
