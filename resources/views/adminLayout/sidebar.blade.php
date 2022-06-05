@@ -87,6 +87,9 @@
               <li class="nav-item dropdown {{ request()->segment(2) == 'address' ? 'active' : '' }}">
                   <a href="{{ route('admin.address') }}" class="nav-link"><i class="fas fa-th-large"></i> <span>Alamat</span></a>
               </li>
+              <li class="nav-item dropdown {{ request()->segment(2) == 'courier' ? 'active' : '' }}">
+                  <a href="/admin/courier" class="nav-link"><i class="fas fa-th-large"></i> <span>Kurir</span></a>
+              </li>
               <li class="nav-item dropdown {{ request()->segment(2) == 'bank' ? 'active' : '' }}">
                   <a href="{{ route('admin.bankAccount') }}" class="nav-link"><i class="fas fa-th-large"></i> <span>Rekening</span></a>
               </li>

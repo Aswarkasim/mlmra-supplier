@@ -1,27 +1,29 @@
 <?php
 
+use App\Models\Courier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Reseller\ResellerAuthController;
 use App\Http\Controllers\API\RajaOngkirController;
-use App\Http\Controllers\API\Reseller\HomepageController;
-use App\Http\Controllers\API\Reseller\ProductController;
-use App\Http\Controllers\API\Reseller\ProfileController;
-use App\Http\Controllers\API\Reseller\CheckOutController;
-use App\Http\Controllers\API\MultiPlatform\MultiFlatformController;
-use App\Http\Controllers\API\Reseller\SupplierController;
-use App\Http\Controllers\API\Reseller\BrandController;
-use App\Http\Controllers\API\Reseller\CategoryController;
-use App\Http\Controllers\API\Customer\CustomerAuthController;
-use App\Http\Controllers\API\Reseller\BankAccountController;
-use App\Http\Controllers\API\Reseller\TransactionController;
 use App\Http\Controllers\API\Customer\DetailReseller;
-use App\Http\Controllers\API\Customer\CategoryReseller;
 use App\Http\Controllers\API\Customer\AddressCustomer;
 use App\Http\Controllers\API\Customer\ProductCustomer;
-use App\Http\Controllers\API\Customer\CustomerCheckoutController;
-use App\Http\Controllers\API\Customer\CustomerTransactionController;
+use App\Http\Controllers\API\Reseller\BrandController;
+use App\Http\Controllers\API\Customer\CategoryReseller;
+use App\Http\Controllers\API\Reseller\CourierController;
+use App\Http\Controllers\API\Reseller\ProductController;
+use App\Http\Controllers\API\Reseller\ProfileController;
+use App\Http\Controllers\API\Reseller\CategoryController;
+use App\Http\Controllers\API\Reseller\CheckOutController;
+use App\Http\Controllers\API\Reseller\HomepageController;
+use App\Http\Controllers\API\Reseller\SupplierController;
 use App\Http\Controllers\API\Reseller\FlashsaleController;
+use App\Http\Controllers\API\Reseller\BankAccountController;
+use App\Http\Controllers\API\Reseller\TransactionController;
+use App\Http\Controllers\API\Customer\CustomerAuthController;
+use App\Http\Controllers\API\Reseller\ResellerAuthController;
+use App\Http\Controllers\API\Customer\CustomerCheckoutController;
+use App\Http\Controllers\API\MultiPlatform\MultiFlatformController;
+use App\Http\Controllers\API\Customer\CustomerTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +76,10 @@ Route::group(['prefix' => 'reseller', 'namespace' => 'Reseller'], function () {
         Route::group(['prefix' => 'flashsale'], function () {
             Route::get('', [FlashsaleController::class, 'index']);
             Route::post('/create', [FlashsaleController::class, 'create']);
+        });
+
+        Route::group(['prefix' => 'courier'], function () {
+            Route::get('', [CourierController::class, 'index']);
         });
 
         Route::group(['prefix' => 'product'], function () {

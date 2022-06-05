@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\CourierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +83,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::get('edit/category/{id}', [CategoryController::class, 'categorySelect'])->name('admin.category.select.ajax2');
         Route::get('category/{id}', [CategoryController::class, 'categorySelect'])->name('admin.category.select.ajax');
     });
+
+    Route::resource('courier', CourierController::class);
 
     // Varian Product
     Route::group(['prefix' => 'varian'], function () {
