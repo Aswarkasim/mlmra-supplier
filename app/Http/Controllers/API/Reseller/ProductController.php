@@ -103,7 +103,7 @@ class ProductController extends Controller
 
     public function allCart()
     {
-        $cart = ResellerCart::with(['reseller', 'product'])->whereResellerId(Auth::guard('reseller-api')->id())->get();
+        $cart = ResellerCart::with(['reseller', 'product'])->whereResellerId(Auth::guard('reseller-api')->id())->orderBy('created_at', 'asc')->get();
         return CartResource::collection($cart);
         // return CartResource::collection($cart);
     }
