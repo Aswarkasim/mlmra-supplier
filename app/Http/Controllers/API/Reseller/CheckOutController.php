@@ -130,7 +130,7 @@ class CheckOutController extends Controller
 
         $validator = Validator::make($request->all(), [
             'bank_account_id' => 'required',
-            'courier_type' => 'required',
+            // 'courier_type' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -242,7 +242,7 @@ class CheckOutController extends Controller
                     $transactionDetail2->varian_color = $productTransaction->varian_color;
                     $transactionDetail2->varian_weight = $productTransaction->varian_weight;
                     $transactionDetail2->varian_size = $productTransaction->varian_size;
-                    $transactionDetail2->varian_type = $productTransaction->varian_type; 
+                    $transactionDetail2->varian_type = $productTransaction->varian_type;
                     $transactionDetail2->varian_taste = $productTransaction->varian_taste;
                     $transactionDetail2->product_price = $productTransaction->product_price;
                     $transactionDetail2->save();
