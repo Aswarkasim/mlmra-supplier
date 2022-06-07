@@ -298,5 +298,5 @@
 @include('templates.admin_modals_upload_image_products');
 
 @push('script')
-    <script src="{{ asset('public/admin/asset/js/product.js') }}"></script>
+    <script src="/admin/asset/js/product.js"></script>
 @endpush

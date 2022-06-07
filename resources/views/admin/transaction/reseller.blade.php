@@ -46,7 +46,7 @@
                                             <td>
                                                 {{ $transaction->transaction_status }}
                                                  <br>
-                                                {{$transaction->resi}}
+                                                {{$transaction->waybill_number}}
                                             <br>
                                             
                                             </td>

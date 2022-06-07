@@ -72,9 +72,9 @@ class TransactionController extends Controller
     {
         // dd($request->all());
         $transaction = ResellerTransaction::whereId($request->transactionIdResi)->first();
-        $transaction->resi = $request->resi;
+        $transaction->waybill_number = $request->resi;
         $transaction->save();
-        \Brian2694\Toastr\Facades\Toastr::success('Sukses ubah resi:)', 'Info');
+        \Brian2694\Toastr\Facades\Toastr::success('Sukses ubah resi)', 'Info');
         return redirect()->back();
     }
 
