@@ -239,6 +239,7 @@ class ProfileController extends Controller
             'birth_date' => 'required',
             'gender' => 'required',
             'email' => 'required',
+            'job' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -278,12 +279,15 @@ class ProfileController extends Controller
         $reseller->birth_date = $request->birth_date;
         $reseller->gender   = $request->gender;
         $reseller->email   = $request->email;
+        $reseller->job   = $request->job;
+        $reseller->description   = $request->description;
         $reseller->media_id = $media != '' ? $media->id : $reseller->media_id;
 
         $reseller->save();
         return response()->json([
             'status' => 'success',
-            'message' => 'Profile Updated'
+            'message' => 'Profile Updated',
+            'data'      => $reseller
         ], 201);
     }
 }
