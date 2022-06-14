@@ -31,7 +31,11 @@ class ProfileController extends Controller
     public function index()
     {
         return ResellerResource::make(Auth::guard('reseller-api')->user());
-        // return  ResellerTransaction::whereMonth('created_at', '12')->get();
+        // $profile = Reseller::find(Auth::guard('reseller-api')->user());
+        // return response()->json([
+        //     'status' => "success",
+        //     'profile' => $profile
+        // ], 200);
     }
 
     public function changePassword(Request $request)

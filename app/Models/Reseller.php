@@ -39,11 +39,12 @@ class Reseller extends Authenticatable implements JWTSubject
     ];
 
     protected $hidden = [
-        'email', 'password',
+        'password',
     ];
 
 
-    public function media() {
+    public function media()
+    {
         return $this->belongsTo(Media::class);
     }
 

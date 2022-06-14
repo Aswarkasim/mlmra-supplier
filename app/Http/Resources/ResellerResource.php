@@ -17,7 +17,7 @@ class ResellerResource extends JsonResource
         return [
             'data' => [
                 'sub_data' => parent::toArray($request),
-                'image' => $this->media ? env('APP_IMAGE_URL').$this->media->file_name : null
+                'image' => $this->media ? $this->path . $this->media->file_name : null
             ]
         ];
     }
