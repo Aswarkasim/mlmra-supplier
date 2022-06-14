@@ -24,12 +24,14 @@ use App\Http\Resources\ReferalResource;
 use App\Http\Resources\ResellerResource;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\API\JsonFormatter;
+use App\Models\ResellerTransaction;
 
 class ProfileController extends Controller
 {
     public function index()
     {
         return ResellerResource::make(Auth::guard('reseller-api')->user());
+        // return  ResellerTransaction::whereMonth('created_at', '12')->get();
     }
 
     public function changePassword(Request $request)
@@ -288,6 +290,31 @@ class ProfileController extends Controller
             'status' => 'success',
             'message' => 'Profile Updated',
             'data'      => $reseller
+        ], 201);
+    }
+
+    function statistikTransaction()
+    {
+        //count total price transaction this month from reseller_transaction table
+        $reseller_id = Auth::guard('reseller-api')->id();
+        $transactions = ResellerTransaction::where('reseller_id', $reseller_id)->whereMonth('created_at', date('m'))->get();
+        $total_price = 0;
+        foreach ($transactions as $transaction) {
+            $total_price += $transaction->total_price;
+        }
+
+
+        //count total price transaction one month ago from reseller_transaction table
+        $transactions_one_month_ago = ResellerTransaction::where('reseller_id', $reseller_id)->whereMonth('created_at', date('m', strtotime('-1 month')))->get();
+        $total_price_one_month_ago = 0;
+        foreach ($transactions_one_month_ago as $transaction) {
+            $total_price_one_month_ago += $transaction->total_price;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'this_month'      => $total_price,
+            'one_month_ago'      => $total_price_one_month_ago
         ], 201);
     }
 }
