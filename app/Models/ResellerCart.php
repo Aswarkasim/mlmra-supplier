@@ -29,6 +29,7 @@ class ResellerCart extends Model
     // {
     //     return $this->belongsTo(User::class);
     // }
+    // function relation from product and media with parameter media code
 
     public function reseller()
     {
@@ -37,7 +38,7 @@ class ResellerCart extends Model
 
     public function product()
     {
-        return $this->belongsTo(Product::class)->with(['user', 'user.address', 'category', 'subcategory']);
+        return $this->belongsTo(Product::class)->with(['user', 'user.address', 'mediaCode', 'category', 'subcategory']);
         // return $this->belongsTo(Product::class);
     }
 }

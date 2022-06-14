@@ -55,7 +55,7 @@ class CartResource extends JsonResource
                 // 'category' => $this->category ? $this->category->name : null,
                 // 'sub_category' => $this->subcategory ? $this->subcategory->name : null,
                 // 'media' => Media::whereCode($this->media_code)->get(),
-                'media' => Media::whereCode($this->media_code)->first(),
+                // 'media' => Media::whereCode($this->media_code)->first(),
             ],
             // 'dikirim_dari' => self::getAddress()
 
