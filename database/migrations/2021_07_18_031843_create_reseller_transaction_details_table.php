@@ -19,7 +19,7 @@ class CreateResellerTransactionDetailsTable extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->string('varian_color')->nullable();
             $table->decimal('varian_weight')->nullable();
-            $table->decimal('varian_size')->nullable();
+            $table->string('varian_size')->nullable();
             $table->string('varian_type')->nullable();
             $table->string('varian_taste')->nullable();
             $table->decimal('product_price')->nullable();
